@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Syntax Sorcerer</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+  
+  <!-- CSS Link -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  
+  <div id="app"></div>
+
+  <!-- Domain / Repositories -->
+  <script src="js/data-challenges.js"></script>
+  <script src="js/data-dungeon.js"></script>
+  <script src="js/entities.js"></script>
+  
+  <!-- Services / Architecture -->
+  <script src="js/services.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/controller.js"></script>
+
+  <!-- Initialization -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      new GameController().start();
+    });
+  </script>
+</body>
+</html>
