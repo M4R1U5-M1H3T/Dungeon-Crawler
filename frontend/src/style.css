@@ -1,6 +1,3 @@
-/* ================================================================
-   GLOBAL RESET & VARIABLES
-   ================================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -40,7 +37,7 @@ body::after {
   pointer-events: none; z-index: 9999;
 }
 
-#app {
+#app, #root > div {
   width: min(880px, 100vw);
   min-height: 100vh;
   display: flex;
@@ -49,9 +46,6 @@ body::after {
   gap: 8px;
 }
 
-/* ================================================================
-   PANELS & LAYOUT
-   ================================================================ */
 .panel {
   background: var(--pan);
   border: 1px solid var(--brd);
@@ -72,9 +66,6 @@ body::after {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ================================================================
-   TYPOGRAPHY
-   ================================================================ */
 .title-vt {
   font-family: 'VT323', monospace;
   font-size: clamp(42px, 9vw, 80px);
@@ -102,9 +93,6 @@ body::after {
 .c-g   { color: var(--g); }
 .c-txt { color: var(--txt); }
 
-/* ================================================================
-   BUTTONS
-   ================================================================ */
 .btn {
   background: transparent;
   color: var(--g);
@@ -143,9 +131,6 @@ body::after {
 .btn.full { width: 100%; text-align: center; }
 .btn.center { text-align: center; }
 
-/* ================================================================
-   STAT BARS
-   ================================================================ */
 .bar-wrap { display: flex; align-items: center; gap: 8px; font-size: 11px; }
 .bar { flex: 1; height: 11px; background: #050a05; border: 1px solid var(--brd); border-radius: 2px; overflow: hidden; }
 .bar-fill { height: 100%; transition: width 0.35s ease; border-radius: 2px; }
@@ -154,9 +139,6 @@ body::after {
 .en-bar   { background: linear-gradient(90deg, #aa0000, #ff3a3a); }
 .bar-val  { font-size: 11px; min-width: 50px; text-align: right; color: var(--txt); }
 
-/* ================================================================
-   CODE BLOCK
-   ================================================================ */
 .code {
   background: #000;
   border: 1px solid var(--brd);
@@ -172,9 +154,6 @@ body::after {
   overflow-x: auto;
 }
 
-/* ================================================================
-   WRITE INPUT
-   ================================================================ */
 .write-input {
   width: 100%;
   background: #000;
@@ -194,9 +173,6 @@ body::after {
 }
 .write-input::placeholder { color: var(--dim); }
 
-/* ================================================================
-   COMBAT LOG
-   ================================================================ */
 .log { font-size: 12px; line-height: 1.9; max-height: 130px; overflow-y: auto; }
 .log-hit  { color: var(--red); }
 .log-heal { color: #00ff88; }
@@ -205,9 +181,6 @@ body::after {
 .log-info { color: var(--blu); }
 .log-sys  { color: var(--dg); }
 
-/* ================================================================
-   LAYOUT UTILS
-   ================================================================ */
 .hbar { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .flex-col { display: flex; flex-direction: column; gap: 8px; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -218,7 +191,6 @@ body::after {
   padding: 8px 12px; font-size: 12px; color: var(--dg); border-radius: 2px;
 }
 
-/* Room progress dots */
 .rdot {
   display: inline-flex; align-items: center; justify-content: center;
   width: 22px; height: 22px; border: 1px solid var(--brd);
@@ -228,16 +200,13 @@ body::after {
 .rdot.done { border-color: var(--dim); background: var(--gg); color: var(--dg); }
 .rdot.boss { border-color: #440000; color: var(--red); }
 
-/* Enemy sprite */
 .sprite { font-size: 64px; text-align: center; line-height: 1; filter: drop-shadow(0 0 14px currentColor); }
 .ename  { font-family: 'VT323', monospace; font-size: 30px; text-align: center; }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
 
-/* Shake (wrong answer) */
 @keyframes shake {
   0%,100% { transform: translateX(0); }
   20% { transform: translateX(-7px); }
@@ -247,7 +216,6 @@ body::after {
 }
 .shake { animation: shake 0.35s ease; }
 
-/* Pulse (correct) */
 @keyframes pulse-g {
   0%   { box-shadow: 0 0 0 0 rgba(0,255,65,0.5); }
   70%  { box-shadow: 0 0 0 10px rgba(0,255,65,0); }
@@ -255,6 +223,5 @@ body::after {
 }
 .pulse-ok { animation: pulse-g 0.5s ease; }
 
-/* Flash text */
 @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
 .blink { animation: blink 1s infinite; }

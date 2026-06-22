@@ -1,6 +1,4 @@
-'use strict';
-
-class Player {
+export class Player {
   constructor(name) {
     this.name    = name;
     this.hp      = 100; this.maxHp  = 100;
@@ -10,11 +8,11 @@ class Player {
     this.score   = 0;   this.streak = 0;
   }
   isAlive()    { return this.hp > 0; }
-  takeDmg(n)   { this.hp = Math.max(0, this.hp - n); }
-  heal(n)      { this.hp = Math.min(this.maxHp, this.hp + n); }
-  restoreMp(n) { this.mp = Math.min(this.maxMp, this.mp + n); }
+  takeDmg(n)   { this.hp = Math.max(0, this.hp - n); return this; }
+  heal(n)      { this.hp = Math.min(this.maxHp, this.hp + n); return this; }
+  restoreMp(n) { this.mp = Math.min(this.maxMp, this.mp + n); return this; }
   spendMp(n)   { if (this.mp < n) return false; this.mp -= n; return true; }
-  addScore(n)  { this.score = Math.max(0, this.score + n); }
+  addScore(n)  { this.score = Math.max(0, this.score + n); return this; }
   gainXP(n) {
     this.xp += n;
     const need = this.level * 100;
@@ -26,10 +24,14 @@ class Player {
     }
     return false;
   }
+  clone() {
+    return Object.assign(new Player(this.name), this);
+  }
 }
 
-class EnemyInstance {
+export class EnemyInstance {
   constructor(d) { Object.assign(this, JSON.parse(JSON.stringify(d))); }
   isAlive()  { return this.hp > 0; }
-  takeDmg(n) { this.hp = Math.max(0, this.hp - n); }
+  takeDmg(n) { this.hp = Math.max(0, this.hp - n); return this; }
+  clone() { return new EnemyInstance(this); }
 }

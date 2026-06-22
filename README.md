@@ -8,9 +8,9 @@ Syntax Sorcerer is an educational web-based RPG designed to help 9th-grade stude
 ## 🎮 Game Features
 
 * **Educational Combat System:** Defeat enemies like the *Bug Goblin* or the *Logic Witch* by correctly answering multiple-choice Python questions.
-* **Write-Code Challenges (Sala Scriptorilor):** Type actual Python code to defeat bosses and unlock special doors. Features a smart "fuzzy-matching" validator that awards full points for 80% accurate answers (to forgive minor typos).
-* **Risk & Reward Mechanics:** 
-  * Build an answer **Streak** to multiply your attack damage and score.
+* **Write-Code Challenges (Sala Scriptorilor):** Type actual Python code to defeat bosses and unlock special doors. Features a smart "fuzzy-matching" validator (Levenshtein ≥ 80%) that runs **server-side** to keep answers hidden from the client.
+* **Risk & Reward Mechanics:**
+  * Build an answer **Streak** to multiply attack damage and score.
   * Spend Mana (MP) to cast powerful spells.
   * Pay Gold (💰) or Score to reveal hints.
   * Try to flee (🏃) with a 20% success rate (disabled against Bosses!).
@@ -20,7 +20,7 @@ Syntax Sorcerer is an educational web-based RPG designed to help 9th-grade stude
 ---
 
 ## 📚 Curriculum Scope
-The game covers the standard Romanian 9th-grade Informatics curriculum for Python, including:
+The game covers the standard Romanian 9th-grade Informatics curriculum for Python:
 * Variabile & Tipuri de date
 * Operatori logici și matematici
 * Instrucțiuni condiționale (`if/elif/else`)
@@ -31,21 +31,76 @@ The game covers the standard Romanian 9th-grade Informatics curriculum for Pytho
 
 ---
 
-## 🛠️ Architecture & File Structure
+## 🏗️ Architecture
 
-The project is built using Vanilla HTML, CSS, and JavaScript, strictly following a **Layered Architecture** and the **Single Responsibility Principle (SRP)**.
-```text
-/syntax-sorcerer
+The project is split into a **React frontend** and a **Node.js/Express backend**.
+
+```
+Dungeon-Crawler/
+├── backend/               # Node.js + Express API server
+│   ├── server.js          # Entry point (port 3001)
+│   ├── data/
+│   │   ├── challenges.js  # ~80 Python quiz questions (answers stored server-side)
+│   │   └── dungeon.js     # 4 floors, 13 enemies
+│   ├── services/
+│   │   └── validator.js   # Levenshtein fuzzy-match for write answers
+│   └── routes/
+│       ├── challenges.js  # GET /api/challenges/random · POST /api/validate
+│       └── dungeon.js     # GET /api/dungeon · GET /api/enemies
 │
-├── index.html                 # Main entry point linking all assets
-├── css/
-│   └── style.css              # Custom styling, CRT scanlines, and CSS animations
-│
-└── js/
-    ├── data-challenges.js     # [Layer 1] ChallengeRepository (MC & Write questions)
-    ├── data-dungeon.js        # [Layer 1] EnemyRepository & Dungeon floors/rooms
-    ├── entities.js            # [Layer 2] Domain Entities (Player, EnemyInstance)
-    ├── services.js            # [Layer 3] Business Logic (Combat math, String similarity validation)
-    ├── state.js               # [Layer 4] GameState (Tracks HP, MP, current room, logs)
-    ├── renderer.js            # [Layer 5] View Layer (Generates HTML for active screens)
-    └── controller.js          # [Layer 6] Orchestrator (Handles DOM events and routes logic)
+└── frontend/              # React + Vite SPA
+    ├── index.html
+    ├── vite.config.js     # Proxies /api → localhost:3001 in dev
+    └── src/
+        ├── App.jsx        # Loads backend data, boots reducer
+        ├── Game.jsx       # Async action handlers (fetch challenge, validate answer)
+        ├── api/           # Typed fetch wrappers
+        ├── entities/      # Player & EnemyInstance classes
+        ├── services/      # Pure combat math (CombatService, ProgressionService)
+        ├── game/          # useReducer state (gameReducer + initialState)
+        └── components/
+            ├── screens/   # One component per game screen (11 screens)
+            └── ui/        # HUD, ProgressBar, ChallengeWidget, ChallengeWriteWidget
+```
+
+### API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/dungeon` | All 4 floor definitions |
+| `GET` | `/api/enemies` | All 13 enemy definitions |
+| `GET` | `/api/challenges/random` | Random challenge (answer stripped, options shuffled) |
+| `POST` | `/api/validate` | `{challengeId, answer}` → `{correct, explanation, correctAnswer?}` |
+
+---
+
+## 🚀 Running the Project
+
+### Prerequisites
+- Node.js 18+
+- npm
+
+### 1. Start the Backend
+```bash
+cd backend
+npm install
+npm start        # Runs on http://localhost:3001
+# or for dev with auto-reload:
+npm run dev
+```
+
+### 2. Start the Frontend
+```bash
+cd frontend
+npm install
+npm run dev      # Runs on http://localhost:5173
+```
+
+Open **http://localhost:5173** in your browser. The Vite dev server proxies all `/api` requests to the backend automatically.
+
+### Production Build
+```bash
+cd frontend
+npm run build    # Output in frontend/dist/
+```
+Serve `dist/` with any static file server, pointing `/api` at the backend.
