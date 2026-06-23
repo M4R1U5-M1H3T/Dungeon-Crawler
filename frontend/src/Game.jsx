@@ -3,6 +3,7 @@ import { fetchChallenge, validateAnswer } from './api/gameApi.js';
 import { CombatService, ProgressionService } from './services/combat.js';
 
 import MenuScreen from './components/screens/MenuScreen.jsx';
+import LearnScreen from './components/screens/LearnScreen.jsx';
 import HowToScreen from './components/screens/HowToScreen.jsx';
 import NameScreen from './components/screens/NameScreen.jsx';
 import ExploreScreen from './components/screens/ExploreScreen.jsx';
@@ -15,17 +16,22 @@ import GameOverScreen from './components/screens/GameOverScreen.jsx';
 import VictoryScreen from './components/screens/VictoryScreen.jsx';
 
 export default function Game({ state, dispatch }) {
-  const { floors, enemies, usedChallengeIds } = state;
+  const { floors, enemies, usedChallengeIds, grade, selectedTopics } = state;
 
   const getChallenge = useCallback(async (opts) => {
     dispatch({ type: 'SET_LOADING', value: true });
     try {
-      const ch = await fetchChallenge({ ...opts, excludeIds: usedChallengeIds });
+      const ch = await fetchChallenge({
+        ...opts,
+        excludeIds: usedChallengeIds,
+        grade: grade || 9,
+        selectedTopics: selectedTopics || [],
+      });
       return ch;
     } finally {
       dispatch({ type: 'SET_LOADING', value: false });
     }
-  }, [usedChallengeIds, dispatch]);
+  }, [usedChallengeIds, grade, selectedTopics, dispatch]);
 
   const handleEnterCombat = useCallback(() => {
     dispatch({ type: 'ENTER_COMBAT' });
@@ -70,7 +76,7 @@ export default function Game({ state, dispatch }) {
 
   const handleFlee = useCallback(() => {
     if (state.enemy.isBoss) return;
-    if (Math.random() < 0.20) {
+    if (Math.random() < 0.10) {
       dispatch({ type: 'C_FLEE_SUCCESS' });
     } else {
       const dmg = CombatService.enemyDmg(state.enemy);
@@ -129,10 +135,19 @@ export default function Game({ state, dispatch }) {
     onCloseShop: () => dispatch({ type: 'CLOSE_SHOP' }),
     onSetWriteAnswer: (v) => dispatch({ type: 'SET_WRITE_ANSWER', value: v }),
     onRestart: () => dispatch({ type: 'RESTART' }),
+    onOpenChapterModal: (topicId) => dispatch({ type: 'OPEN_CHAPTER_MODAL', topicId }),
+    onCloseChapterModal: () => dispatch({ type: 'CLOSE_CHAPTER_MODAL' }),
+    onGotoLearn: (topicId) => dispatch({ type: 'GOTO_LEARN', topicId }),
+    onCloseLearn: () => dispatch({ type: 'CLOSE_LEARN' }),
+    onToggleTopic: (topicId) => dispatch({ type: 'TOGGLE_TOPIC', topicId }),
+    onClearTopics: () => dispatch({ type: 'CLEAR_TOPICS' }),
+    onStartChapterQuiz: (topics) => dispatch({ type: 'START_CHAPTER_QUIZ', topics }),
+    onStartWeakQuiz: (topics) => dispatch({ type: 'START_CHAPTER_QUIZ', topics }),
   };
 
   const screenMap = {
-    MENU:       <MenuScreen actions={actions} />,
+    MENU:       <MenuScreen state={state} actions={actions} />,
+    LEARN:      <LearnScreen state={state} actions={actions} />,
     HOWTO:      <HowToScreen actions={actions} />,
     NAME:       <NameScreen state={state} actions={actions} />,
     EXPLORING:  <ExploreScreen state={state} actions={actions} />,

@@ -1,5 +1,15 @@
 import { Player, EnemyInstance } from '../entities/index.js';
 
+function restorePlayer(data) {
+  if (!data) return null;
+  return Object.assign(new Player(data.name), data);
+}
+
+function restoreEnemy(data) {
+  if (!data) return null;
+  return new EnemyInstance(data);
+}
+
 function pushLog(state, msg, cls = 'log-sys') {
   const log = [{ msg, cls }, ...state.log].slice(0, 14);
   return { ...state, log };
@@ -8,6 +18,18 @@ function pushLog(state, msg, cls = 'log-sys') {
 function markUsed(state, id) {
   if (!id || state.usedChallengeIds.includes(id)) return state;
   return { ...state, usedChallengeIds: [...state.usedChallengeIds, id] };
+}
+
+function trackTopic(state, topic, correct) {
+  if (!topic) return state;
+  const prev = state.topicStats[topic] || { correct: 0, total: 0 };
+  return {
+    ...state,
+    topicStats: {
+      ...state.topicStats,
+      [topic]: { correct: prev.correct + (correct ? 1 : 0), total: prev.total + 1 },
+    },
+  };
 }
 
 export function gameReducer(state, action) {
@@ -44,6 +66,11 @@ export function gameReducer(state, action) {
         msgCls: 'success',
         leveledUp: false,
         usedChallengeIds: [],
+        questionsTotal: 0,
+        questionsCorrect: 0,
+        topicStats: {},
+        grade: state.grade || 9,
+        selectedTopics: state.selectedTopics || [],
         log: [],
       };
     }
@@ -190,6 +217,11 @@ export function gameReducer(state, action) {
       p.streak++;
       const dmg = action.dmg;
       const pts = action.pts;
+      const chTopic = state.challenge && state.challenge.topic;
+      state = trackTopic(
+        { ...state, questionsTotal: state.questionsTotal + 1, questionsCorrect: state.questionsCorrect + 1 },
+        chTopic, true
+      );
       const enemy = state.enemy.clone();
       enemy.takeDmg(dmg);
       p.addScore(pts);
@@ -223,6 +255,8 @@ export function gameReducer(state, action) {
     }
 
     case 'ANSWER_WRONG': {
+      const awTopic = state.challenge && state.challenge.topic;
+      state = trackTopic({ ...state, questionsTotal: state.questionsTotal + 1 }, awTopic, false);
       const p = state.player.clone();
       p.streak = 0;
       p.takeDmg(action.dmg);
@@ -236,6 +270,11 @@ export function gameReducer(state, action) {
     }
 
     case 'DOOR_CORRECT': {
+      const dcTopic = state.challenge && state.challenge.topic;
+      state = trackTopic(
+        { ...state, questionsTotal: state.questionsTotal + 1, questionsCorrect: state.questionsCorrect + 1 },
+        dcTopic, true
+      );
       const p = state.player.clone();
       const pts = 150 + state.challenge.difficulty * 50;
       p.addScore(pts);
@@ -252,6 +291,8 @@ export function gameReducer(state, action) {
     }
 
     case 'DOOR_WRONG': {
+      const dwTopic = state.challenge && state.challenge.topic;
+      state = trackTopic({ ...state, questionsTotal: state.questionsTotal + 1 }, dwTopic, false);
       const p = state.player.clone();
       const dmg = 10 + state.floor * 4;
       p.takeDmg(dmg);
@@ -318,6 +359,69 @@ export function gameReducer(state, action) {
     case 'SET_WRITE_ANSWER':
       return { ...state, writeAnswer: action.value };
 
+    case 'OPEN_CHAPTER_MODAL':
+      return { ...state, chapterModal: action.topicId };
+
+    case 'CLOSE_CHAPTER_MODAL':
+      return { ...state, chapterModal: null };
+
+    case 'GOTO_LEARN':
+      return { ...state, screen: 'LEARN', learnTopic: action.topicId, chapterModal: null };
+
+    case 'CLOSE_LEARN':
+      return { ...state, screen: 'MENU', learnTopic: null };
+
+    case 'TOGGLE_TOPIC': {
+      const already = (state.selectedTopics || []).includes(action.topicId);
+      const selectedTopics = already
+        ? (state.selectedTopics || []).filter(t => t !== action.topicId)
+        : [...(state.selectedTopics || []), action.topicId];
+      return { ...state, selectedTopics, chapterModal: null };
+    }
+
+    case 'CLEAR_TOPICS':
+      return { ...state, selectedTopics: [] };
+
+    case 'START_CHAPTER_QUIZ':
+      return { ...state, selectedTopics: action.topics || [], chapterModal: null, screen: 'NAME' };
+
+    case 'SET_GRADE': {
+      return {
+        screen: 'MENU',
+        player: null, floor: 1, roomIdx: 0,
+        enemy: null, challenge: null, opts: [],
+        log: [], msg: '', msgCls: 'info',
+        lastOk: null, isSpell: false, showHint: false,
+        phase: 'ACTION', rewardLines: [], shopMsg: '',
+        nameDraft: '', leveledUp: false, doorDmg: 0,
+        writeAnswer: '', usedChallengeIds: [],
+        questionsTotal: 0, questionsCorrect: 0,
+        topicStats: {},
+        grade: action.grade,
+        selectedTopics: [],
+        learnTopic: null,
+        chapterModal: null,
+        floors: [], enemies: [],
+        loading: false,
+      };
+    }
+
+    case 'RESTORE_STATE': {
+      const s = action.savedState;
+      return {
+        ...s,
+        player: restorePlayer(s.player),
+        enemy: restoreEnemy(s.enemy),
+        floors: action.floors,
+        enemies: action.enemies,
+        loading: false,
+        
+        phase: s.screen === 'COMBAT' ? 'ACTION' : (s.phase || 'ACTION'),
+        questionsTotal: s.questionsTotal || 0,
+        questionsCorrect: s.questionsCorrect || 0,
+      };
+    }
+
     case 'RESTART':
       return {
         screen: 'MENU',
@@ -328,6 +432,12 @@ export function gameReducer(state, action) {
         phase: 'ACTION', rewardLines: [], shopMsg: '',
         nameDraft: '', leveledUp: false, doorDmg: 0,
         writeAnswer: '', usedChallengeIds: [],
+        questionsTotal: 0, questionsCorrect: 0,
+        topicStats: {},
+        grade: state.grade || 9,
+        selectedTopics: [],
+        learnTopic: null,
+        chapterModal: null,
         floors: state.floors, enemies: state.enemies,
         loading: false,
       };
