@@ -2,3 +2,7 @@
 /frontend/node_modules/
 /frontend/dist/
 /.idea/
+
+# Frontend env
+frontend/.env
+frontend/.env.local
