@@ -34,7 +34,7 @@ export default function VictoryScreen({ state, actions }) {
       </div>
 
       <div className="info-box" style={{ marginBottom: 16, textAlign: 'left' }}>
-        <div>📝 Notă finală: <span className="c-amb" style={{ fontSize: 18, fontWeight: 'bold' }}>{nota}/10</span> <span className="muted" style={{ fontSize: 12 }}>({questionsCorrect}/{questionsTotal} corecte)</span></div>
+        <div>📝 Notă finală: <span className="c-amb" style={{fontSize: 18, fontWeight: 'bold' }}>{nota}/10</span> <span className="muted" style={{ fontSize: 12 }}>({questionsCorrect}/{questionsTotal} corecte)</span></div>
         <div>🏆 Scor final: <span className="c-amb">{player.score}</span></div>
         <div>⚔️ Nivel final: <span className="c-amb">{player.level}</span></div>
         <div>💰 Aur total: <span className="c-amb">{player.gold}</span></div>
@@ -90,3 +90,4 @@ export default function VictoryScreen({ state, actions }) {
     </div>
   );
 }
+

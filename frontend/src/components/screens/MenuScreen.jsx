@@ -31,7 +31,7 @@ function ChapterModal({ chapter, isSelected, onLearn, onQuickQuiz, onToggle, onC
         <div style={{ fontSize: 20, fontWeight: 'bold', color: 'var(--amb)', textAlign: 'center', marginBottom: 4 }}>
           {chapter.name}
         </div>
-        <div style={{ fontSize: 12, color: 'var(--muted)', textAlign: 'center', marginBottom: 22, lineHeight: 1.5 }}>
+        <div style={{ fontSize: 12, color: 'var(--dg)', textAlign: 'center', marginBottom: 22, lineHeight: 1.5 }}>
           {chapter.summary}
         </div>
 
@@ -42,7 +42,7 @@ function ChapterModal({ chapter, isSelected, onLearn, onQuickQuiz, onToggle, onC
             onClick={onLearn}
           >
             <div>📖 <strong>Învață</strong></div>
-            <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 3 }}>
+            <div style={{ fontSize: 11, color: 'var(--dg)', marginTop: 3 }}>
               Teorie, exemple și sintaxă din noua programă
             </div>
           </button>
@@ -53,7 +53,7 @@ function ChapterModal({ chapter, isSelected, onLearn, onQuickQuiz, onToggle, onC
             onClick={onQuickQuiz}
           >
             <div>🎯 <strong>Quiz rapid</strong></div>
-            <div style={{ fontSize: 11, color: 'rgba(0,0,0,0.5)', marginTop: 3 }}>
+            <div style={{ fontSize: 11, color: 'var(--dg)', marginTop: 3 }}>
               Joc complet doar din {chapter.name}
             </div>
           </button>
@@ -67,9 +67,9 @@ function ChapterModal({ chapter, isSelected, onLearn, onQuickQuiz, onToggle, onC
             }}
             onClick={onToggle}
           >
-            <div>{isSelected ? '✓' : '+'} <strong>{isSelected ? 'Elimină din selecție' : 'Adaugă la quiz personalizat'}</strong></div>
-            <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 3 }}>
-              Combină mai multe capitole într-un singur quiz
+            <div>{isSelected ? '✓ Selectat pentru quiz personalizat' : '+ Adaugă la quiz personalizat'}</div>
+            <div style={{ fontSize: 11, color: 'var(--dg)', marginTop: 3 }}>
+              Selectează mai multe capitole, apoi pornește quiz-ul
             </div>
           </button>
         </div>
@@ -77,12 +77,12 @@ function ChapterModal({ chapter, isSelected, onLearn, onQuickQuiz, onToggle, onC
         <button
           onClick={onClose}
           style={{
-            marginTop: 18, width: '100%', background: 'none', border: 'none',
-            color: 'var(--dg)', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit',
-            padding: '4px',
+            marginTop: 18, width: '100%', background: 'transparent',
+            border: 'none', color: 'var(--dg)', fontSize: 12,
+            cursor: 'pointer', fontFamily: 'inherit', padding: '6px 0',
           }}
         >
-          × Închide
+          ← Închide
         </button>
       </div>
     </div>
@@ -90,114 +90,140 @@ function ChapterModal({ chapter, isSelected, onLearn, onQuickQuiz, onToggle, onC
 }
 
 export default function MenuScreen({ state, actions }) {
-  const grade = (state && state.grade) || 9;
+  const { grade, chapterModal, selectedTopics } = state;
+  const chapters = getChapters(grade || 9);
   const info = GRADE_INFO[grade] || GRADE_INFO[9];
-  const floors = DUNGEON_FLOORS[grade] || [];
-  const chapters = getChapters(grade);
-  const selectedTopics = state.selectedTopics || [];
-  const chapterModal = state.chapterModal;
+  const floors = DUNGEON_FLOORS[grade] || DUNGEON_FLOORS[9];
   const modalChapter = chapterModal ? chapters.find(c => c.id === chapterModal) : null;
 
   return (
-    <div className="panel ta-c" style={{ margin: 'auto', maxWidth: 600, padding: '36px 24px' }}>
+    <div className="panel" style={{ maxWidth: 600, margin: 'auto' }}>
       <div className="title-vt">SYNTAX SORCERER</div>
-      <div className="muted" style={{ letterSpacing: 3, marginBottom: 20 }}>▸ DUNGEON CRAWLER · PYTHON EDITION ◂</div>
 
-      <pre className="muted" style={{ fontSize: 10, lineHeight: 1.5, marginBottom: 20 }}>
-{`╔══════════════════════════════════════╗
-║  Explorează dungeonurile pythoniste  ║
-║  Sparge bug-uri cu cod corect        ║
-║  Înfruntă inamicii cu logică pură   ║
-╚══════════════════════════════════════╝`}
-      </pre>
+      {/* Inline grade selector */}
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, marginTop: 4, marginBottom: 2 }}>
+        <span className="tag" style={{ letterSpacing: 2 }}>CLASĂ</span>
+        {[9, 10, 11].map(g => (
+          <button
+            key={g}
+            onClick={() => actions.onGradeChange(g)}
+            style={{
+              background: grade === g ? 'rgba(255,179,0,0.15)' : 'transparent',
+              border: `1px solid ${grade === g ? 'var(--amb)' : 'var(--brd)'}`,
+              color: grade === g ? 'var(--amb)' : 'var(--dg)',
+              borderRadius: 12,
+              padding: '4px 14px',
+              fontSize: 12,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              letterSpacing: 1,
+              minHeight: 32,
+              transition: 'all 0.12s',
+            }}
+          >
+            a {g}-a
+          </button>
+        ))}
+      </div>
+      <div className="tag" style={{ textAlign: 'center', marginBottom: 4, letterSpacing: 2 }}>
+        {info.subtitle}
+      </div>
 
-      <div className="info-box" style={{ textAlign: 'left', marginBottom: 20 }}>
-        <div style={{ marginBottom: 8 }}>
-          <span className="tag">📚 Programa cls. {info.label} · {info.subtitle}</span>
-        </div>
-        <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 12 }}>
-          {floors.map((f, i) => (
-            <span key={i}>🏰 {f}{i < floors.length - 1 ? '  ' : ''}</span>
-          ))}
-        </div>
+      <hr className="hr" />
 
-        <div style={{ fontSize: 11, color: 'var(--amb)', marginBottom: 7, letterSpacing: 1, fontWeight: 'bold' }}>
-          CAPITOLE — apasă pentru a explora:
-        </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 10 }}>
+        <div className="tag" style={{ marginBottom: 2 }}>▸ CAPITOLE</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
           {chapters.map(ch => {
-            const sel = selectedTopics.includes(ch.id);
+            const isSel = (selectedTopics || []).includes(ch.id);
             return (
               <button
                 key={ch.id}
+                className="chip-btn"
                 onClick={() => actions.onOpenChapterModal(ch.id)}
                 style={{
-                  background: sel ? 'var(--g)' : 'var(--bg)',
-                  color: sel ? '#000' : 'var(--txt)',
-                  border: `1px solid ${sel ? 'var(--g)' : 'var(--dg)'}`,
-                  borderRadius: 16,
-                  padding: '5px 13px',
+                  background: isSel ? 'rgba(0,255,65,0.1)' : 'transparent',
+                  border: `1px solid ${isSel ? 'var(--g)' : 'var(--brd)'}`,
+                  color: isSel ? 'var(--g)' : 'var(--txt)',
+                  borderRadius: 14,
+                  padding: '4px 12px',
                   fontSize: 12,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
-                  transition: 'all 0.15s',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 4,
+                  gap: 5,
+                  transition: 'all 0.12s',
                 }}
               >
-                <span>{ch.icon}</span>
-                <span>{ch.name}</span>
-                {sel && <span style={{ fontSize: 10 }}>✓</span>}
+                {ch.icon} {ch.name} {isSel && <span style={{ fontSize: 10 }}>✓</span>}
               </button>
             );
           })}
         </div>
-
-        {selectedTopics.length > 0 && (
-          <div style={{
-            marginTop: 12, padding: '10px 12px',
-            background: 'rgba(0,200,80,0.07)',
-            border: '1px solid var(--g)',
-            borderRadius: 8,
-            display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap',
-          }}>
-            <span style={{ fontSize: 12, color: 'var(--g)', flex: 1 }}>
-              ✓ {selectedTopics.length} capitol{selectedTopics.length > 1 ? 'e' : ''} selectat{selectedTopics.length > 1 ? 'e' : ''}
-            </span>
-            <button
-              className="btn amb"
-              style={{ padding: '5px 14px', fontSize: 12 }}
-              onClick={() => actions.onStartChapterQuiz(selectedTopics)}
-            >
-              🎯 Quiz personalizat
-            </button>
-            <button
-              onClick={actions.onClearTopics}
-              style={{ background: 'none', border: 'none', color: 'var(--dg)', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', padding: 0 }}
-            >
-              × Golește
-            </button>
-          </div>
-        )}
       </div>
 
-      <div className="flex-col" style={{ alignItems: 'center', gap: 10 }}>
-        <button className="btn amb center" style={{ width: 220, fontSize: 15 }} onClick={actions.onStart}>
-          ▸ JOACĂ ACUM
+      {selectedTopics && selectedTopics.length > 0 && (
+        <div style={{
+          marginBottom: 10, padding: '10px 12px',
+          background: 'rgba(0,255,65,0.05)',
+          border: '1px solid var(--g)',
+          borderRadius: 4,
+          display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap',
+        }}>
+          <span style={{ fontSize: 12, color: 'var(--g)', flex: 1 }}>
+            {selectedTopics.length} capitol{selectedTopics.length > 1 ? 'e' : ''} selectat{selectedTopics.length > 1 ? 'e' : ''}
+          </span>
+          <button
+            className="btn full center"
+            style={{ fontSize: 12, padding: '6px 14px', borderColor: 'var(--g)', color: 'var(--g)' }}
+            onClick={() => actions.onStartChapterQuiz(selectedTopics)}
+          >
+            🎯 Quiz personalizat
+          </button>
+          <button
+            onClick={actions.onClearTopics}
+            style={{
+              background: 'transparent', border: 'none', color: 'var(--dg)',
+              fontSize: 11, cursor: 'pointer', fontFamily: 'inherit', padding: '4px 8px',
+            }}
+          >
+            ✕ Șterge
+          </button>
+        </div>
+      )}
+
+      <hr className="hr" />
+
+      <div style={{ marginBottom: 8 }}>
+        <div className="tag" style={{ marginBottom: 6 }}>▸ ETAJE DUNGEON</div>
+        <div className="grid2">
+          {floors.map((name, i) => (
+            <div key={i} className="info-box" style={{ fontSize: 11 }}>
+              <span className="c-amb">Etaj {i + 1}</span> · {name}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <hr className="hr" />
+
+      <div className="flex-col">
+        <button className="btn amb full center" style={{ fontSize: 16, padding: '14px' }} onClick={actions.onStart}>
+          ⚔️ JOACĂ ACUM
         </button>
-        <button className="btn center" style={{ width: 220 }} onClick={actions.onHowTo}>
-          ? CUM SE JOACĂ
+        <button className="btn full center" onClick={actions.onHowTo}>
+          📖 CUM SE JOACĂ
         </button>
       </div>
 
       {modalChapter && (
         <ChapterModal
           chapter={modalChapter}
-          isSelected={selectedTopics.includes(chapterModal)}
-          onLearn={() => actions.onGotoLearn(chapterModal)}
-          onQuickQuiz={() => actions.onStartChapterQuiz([chapterModal])}
-          onToggle={() => actions.onToggleTopic(chapterModal)}
+          isSelected={(selectedTopics || []).includes(modalChapter.id)}
+          onLearn={() => actions.onGotoLearn(modalChapter.id)}
+          onQuickQuiz={() => actions.onStartChapterQuiz([modalChapter.id])}
+          onToggle={() => actions.onToggleTopic(modalChapter.id)}
           onClose={actions.onCloseChapterModal}
         />
       )}

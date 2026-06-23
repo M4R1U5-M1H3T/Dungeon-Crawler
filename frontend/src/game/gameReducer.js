@@ -1,4 +1,5 @@
 import { Player, EnemyInstance } from '../entities/index.js';
+import { buildMiniDungeon } from './buildMiniDungeon.js';
 
 function restorePlayer(data) {
   if (!data) return null;
@@ -35,13 +36,13 @@ function trackTopic(state, topic, correct) {
 export function gameReducer(state, action) {
   switch (action.type) {
     case 'INIT_DATA':
-      return { ...state, floors: action.floors, enemies: action.enemies };
+      return { ...state, floors: action.floors, baseFloors: action.floors, enemies: action.enemies };
 
     case 'SET_LOADING':
       return { ...state, loading: action.value };
 
     case 'GOTO_MENU':
-      return { ...state, screen: 'MENU' };
+      return { ...state, screen: 'MENU', chapterModal: null };
 
     case 'GOTO_HOWTO':
       return { ...state, screen: 'HOWTO' };
@@ -62,7 +63,7 @@ export function gameReducer(state, action) {
         screen: 'EXPLORING',
         floor: 1,
         roomIdx: 0,
-        msg: `Bun venit, ${name}! Dungeonul te așteaptă. 🗡️`,
+        msg: `Bun venit, ${name}! Dungeonul te asteapta. 🗡️`,
         msgCls: 'success',
         leveledUp: false,
         usedChallengeIds: [],
@@ -80,7 +81,7 @@ export function gameReducer(state, action) {
       const room = fl.rooms[state.roomIdx];
       const enemyData = state.enemies.find(e => e.id === room.id);
       const enemy = new EnemyInstance(enemyData);
-      return {
+      const combatBase = {
         ...state,
         enemy,
         screen: 'COMBAT',
@@ -90,8 +91,8 @@ export function gameReducer(state, action) {
         msg: '',
         leveledUp: false,
         writeAnswer: '',
-        ...pushLog({ ...state, log: [] }, `⚔️ Luptă împotriva ${enemy.name}!`, 'log-info'),
       };
+      return pushLog(combatBase, `Lupta impotriva ${enemy.name}!`, 'log-info');
     }
 
     case 'ENTER_DOOR': {
@@ -133,11 +134,11 @@ export function gameReducer(state, action) {
         ...state,
         player: p,
         rewardLines: [
-          `+${room.potions} poțiun${room.potions > 1 ? 'i' : 'e'}`,
+          `+${room.potions} potiune${room.potions > 1 ? 'i' : ''}`,
           `+${room.gold} aur`,
           '+100 scor',
         ],
-        msg: 'Ai colectat comorile din cameră!',
+        msg: 'Ai colectat comorile din camera!',
         screen: 'REWARD',
         leveledUp: false,
       };
@@ -177,10 +178,10 @@ export function gameReducer(state, action) {
       if (!state.player.potions) return state;
       const p = state.player.clone();
       p.potions--;
-      p.heal(40);
+      p.heal(30);
       return pushLog(
-        { ...state, player: p, msg: `Ai recuperat 40 HP! (${p.hp}/${p.maxHp})`, lastOk: null },
-        `🧪 ${p.name} a folosit o poțiune (+40 HP)`,
+        { ...state, player: p, msg: `Ai recuperat 30 HP! (${p.hp}/${p.maxHp})`, lastOk: null },
+        `🧪 ${p.name} a folosit o potiune (+30 HP)`,
         'log-heal'
       );
     }
@@ -195,7 +196,7 @@ export function gameReducer(state, action) {
         newRoomIdx = 0;
         msg = `🏃 Ai fugit cu succes! Ai ajuns pe Etajul ${newFloor}.`;
       } else {
-        msg = '🏃 Ai fugit din luptă și ai avansat în camera următoare!';
+        msg = '🏃 Ai fugit din lupta si ai avansat in camera urmatoare!';
       }
       return { ...state, floor: newFloor, roomIdx: newRoomIdx, screen: 'EXPLORING', msg, msgCls: 'info', lastOk: null, leveledUp: false };
     }
@@ -204,8 +205,8 @@ export function gameReducer(state, action) {
       const p = state.player.clone();
       p.takeDmg(action.dmg);
       const newState = pushLog(
-        { ...state, player: p, msg: `Nu ai reușit să fugi! Damage primit: ${action.dmg}`, lastOk: false },
-        `❌ Fuga a eșuat! ${state.enemy.name} te-a lovit pentru ${action.dmg} dmg.`,
+        { ...state, player: p, msg: `Nu ai reusit sa fugi! Damage primit: ${action.dmg}`, lastOk: false },
+        `❌ Fuga a esuat! ${state.enemy.name} te-a lovit pentru ${action.dmg} dmg.`,
         'log-bad'
       );
       if (!p.isAlive()) return { ...newState, screen: 'GAME_OVER' };
@@ -229,7 +230,7 @@ export function gameReducer(state, action) {
 
       let base = pushLog(
         { ...state, player: p, enemy, lastOk: true, msg: `Corect! ${action.explanation}` },
-        `✅ ${state.isSpell ? '🔮 Vrajă' : '⚔️ Atac'} pentru ${dmg} dmg! +${pts} pts | streak×${p.streak}`,
+        `✅ ${state.isSpell ? '🔮 Vraja' : '⚔️ Atac'} pentru ${dmg} dmg! +${pts} pts | streak×${p.streak}`,
         'log-ok'
       );
 
@@ -246,7 +247,7 @@ export function gameReducer(state, action) {
             `+${enemy.gold} aur`,
             ...(lvl ? [`🎉 Level Up → Lv.${p.level}!`] : []),
           ],
-          msg: `Ai înfrânt ${enemy.name}!`,
+          msg: `Ai invins ${enemy.name}!`,
           screen: 'REWARD',
           leveledUp: lvl,
         };
@@ -261,8 +262,8 @@ export function gameReducer(state, action) {
       p.streak = 0;
       p.takeDmg(action.dmg);
       const newState = pushLog(
-        { ...state, player: p, lastOk: false, msg: `Greșit! Damage primit: ${action.dmg}.`, phase: 'ACTION', writeAnswer: '', challenge: { ...state.challenge, correctAnswer: action.correctAnswer } },
-        `❌ Greșit! ${state.enemy.name} contra-atacă pentru ${action.dmg} dmg!`,
+        { ...state, player: p, lastOk: false, msg: `Gresit! Damage primit: ${action.dmg}.`, phase: 'ACTION', writeAnswer: '', challenge: { ...state.challenge, correctAnswer: action.correctAnswer } },
+        `❌ Gresit! ${state.enemy.name} contra-ataca pentru ${action.dmg} dmg!`,
         'log-hit'
       );
       if (!p.isAlive()) return { ...newState, screen: 'GAME_OVER' };
@@ -282,7 +283,7 @@ export function gameReducer(state, action) {
       return {
         ...state,
         player: p,
-        rewardLines: [`+${pts} scor`, '+30 XP', '🚪 Ușa s-a deschis!'],
+        rewardLines: [`+${pts} scor`, '+30 XP', '🚪 Usa s-a deschis!'],
         msg: `Corect! ${action.explanation}`,
         screen: 'REWARD',
         lastOk: true,
@@ -332,14 +333,16 @@ export function gameReducer(state, action) {
       if (state.player.gold < 15) return state;
       const p = state.player.clone();
       p.gold -= 15; p.potions++;
-      return { ...state, player: p, shopMsg: '✅ Poțiune cumpărată!' };
+      return { ...state, player: p, shopMsg: '✅ Potiune cumparata!' };
     }
+
     case 'BUY_MANA': {
       if (state.player.gold < 20) return state;
       const p = state.player.clone();
       p.gold -= 20; p.restoreMp(30);
       return { ...state, player: p, shopMsg: '✅ Cristal de Mana folosit! +30 MP' };
     }
+
     case 'BUY_XP': {
       if (state.player.gold < 25) return state;
       const p = state.player.clone();
@@ -347,12 +350,14 @@ export function gameReducer(state, action) {
       const lvl = p.gainXP(50);
       return { ...state, player: p, shopMsg: `✅ +50 XP${lvl ? ' — LEVEL UP!' : ''}`, leveledUp: lvl };
     }
+
     case 'BUY_MAXHP': {
       if (state.player.gold < 40) return state;
       const p = state.player.clone();
       p.gold -= 40; p.maxHp += 20; p.heal(20);
       return { ...state, player: p, shopMsg: '✅ +20 Max HP permanent!' };
     }
+
     case 'CLOSE_SHOP':
       return { ...state, screen: 'REWARD' };
 
@@ -382,63 +387,141 @@ export function gameReducer(state, action) {
     case 'CLEAR_TOPICS':
       return { ...state, selectedTopics: [] };
 
-    case 'START_CHAPTER_QUIZ':
-      return { ...state, selectedTopics: action.topics || [], chapterModal: null, screen: 'NAME' };
+    case 'START_CHAPTER_QUIZ': {
+      const topics = action.topics || [];
+      const miniFloors = topics.length > 0
+        ? buildMiniDungeon(topics, state.enemies, state.grade)
+        : state.baseFloors;
+      return { ...state, selectedTopics: topics, chapterModal: null, screen: 'NAME', floors: miniFloors };
+    }
 
-    case 'SET_GRADE': {
+    case 'ABORT_GAME':
+      return {
+        ...state,
+        screen: 'MENU',
+        player: null,
+        floor: 1,
+        roomIdx: 0,
+        enemy: null,
+        challenge: null,
+        opts: [],
+        log: [],
+        msg: '',
+        msgCls: 'info',
+        lastOk: null,
+        isSpell: false,
+        showHint: false,
+        phase: 'ACTION',
+        rewardLines: [],
+        shopMsg: '',
+        nameDraft: '',
+        leveledUp: false,
+        doorDmg: 0,
+        writeAnswer: '',
+        usedChallengeIds: [],
+        questionsTotal: 0,
+        questionsCorrect: 0,
+        topicStats: {},
+        selectedTopics: [],
+        learnTopic: null,
+        chapterModal: null,
+        floors: state.baseFloors || state.floors,
+        loading: false,
+      };
+
+    case 'SET_GRADE':
       return {
         screen: 'MENU',
-        player: null, floor: 1, roomIdx: 0,
-        enemy: null, challenge: null, opts: [],
-        log: [], msg: '', msgCls: 'info',
-        lastOk: null, isSpell: false, showHint: false,
-        phase: 'ACTION', rewardLines: [], shopMsg: '',
-        nameDraft: '', leveledUp: false, doorDmg: 0,
-        writeAnswer: '', usedChallengeIds: [],
-        questionsTotal: 0, questionsCorrect: 0,
+        player: null,
+        floor: 1,
+        roomIdx: 0,
+        enemy: null,
+        challenge: null,
+        opts: [],
+        log: [],
+        msg: '',
+        msgCls: 'info',
+        lastOk: null,
+        isSpell: false,
+        showHint: false,
+        phase: 'ACTION',
+        rewardLines: [],
+        shopMsg: '',
+        nameDraft: '',
+        leveledUp: false,
+        doorDmg: 0,
+        writeAnswer: '',
+        usedChallengeIds: [],
+        questionsTotal: 0,
+        questionsCorrect: 0,
         topicStats: {},
         grade: action.grade,
         selectedTopics: [],
         learnTopic: null,
         chapterModal: null,
-        floors: [], enemies: [],
+        floors: [],
+        baseFloors: [],
+        enemies: [],
         loading: false,
       };
-    }
 
     case 'RESTORE_STATE': {
       const s = action.savedState;
+      const hasMini = (s.selectedTopics || []).length > 0;
+      const restoredFloors = hasMini
+        ? buildMiniDungeon(s.selectedTopics, action.enemies, s.grade || 9)
+        : action.floors;
       return {
         ...s,
         player: restorePlayer(s.player),
         enemy: restoreEnemy(s.enemy),
-        floors: action.floors,
+        floors: restoredFloors,
+        baseFloors: action.floors,
         enemies: action.enemies,
         loading: false,
-        
         phase: s.screen === 'COMBAT' ? 'ACTION' : (s.phase || 'ACTION'),
         questionsTotal: s.questionsTotal || 0,
         questionsCorrect: s.questionsCorrect || 0,
+        topicStats: s.topicStats || {},
+        selectedTopics: s.selectedTopics || [],
+        learnTopic: s.learnTopic || null,
+        chapterModal: null,
       };
     }
 
     case 'RESTART':
       return {
         screen: 'MENU',
-        player: null, floor: 1, roomIdx: 0,
-        enemy: null, challenge: null, opts: [],
-        log: [], msg: '', msgCls: 'info',
-        lastOk: null, isSpell: false, showHint: false,
-        phase: 'ACTION', rewardLines: [], shopMsg: '',
-        nameDraft: '', leveledUp: false, doorDmg: 0,
-        writeAnswer: '', usedChallengeIds: [],
-        questionsTotal: 0, questionsCorrect: 0,
+        player: null,
+        floor: 1,
+        roomIdx: 0,
+        enemy: null,
+        challenge: null,
+        opts: [],
+        log: [],
+        msg: '',
+        msgCls: 'info',
+        lastOk: null,
+        isSpell: false,
+        showHint: false,
+        phase: 'ACTION',
+        rewardLines: [],
+        shopMsg: '',
+        nameDraft: '',
+        leveledUp: false,
+        doorDmg: 0,
+        writeAnswer: '',
+        usedChallengeIds: [],
+        questionsTotal: 0,
+        questionsCorrect: 0,
         topicStats: {},
         grade: state.grade || 9,
         selectedTopics: [],
         learnTopic: null,
         chapterModal: null,
-        floors: state.floors, enemies: state.enemies,
+        floors: state.baseFloors || state.floors,
+        baseFloors: state.baseFloors || state.floors,
+        enemies: state.enemies,
         loading: false,
       };
 

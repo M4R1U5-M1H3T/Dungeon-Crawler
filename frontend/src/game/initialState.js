@@ -29,6 +29,7 @@ export function makeInitialState() {
     learnTopic: null,
     chapterModal: null,
     floors: [],
+    baseFloors: [],
     enemies: [],
     loading: false,
   };

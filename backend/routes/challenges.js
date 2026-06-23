@@ -28,7 +28,7 @@ router.get('/challenges/random', (req, res) => {
   if (type)     pool = pool.filter(c => c.type === type);
   if (!type)    pool = pool.filter(c => c.type !== 'write');
 
-  let available = pool.filter(c => !excluded.includes(c.id));
+  let available = pool.filter(c => !excluded.includes(String(c.id)));
   if (!available.length) available = pool;
 
   if (!available.length) {

@@ -1,4 +1,4 @@
-export default function HUD({ player, floor }) {
+export default function HUD({ player, floor, onExit }) {
   const hp    = (player.hp / player.maxHp * 100).toFixed(1);
   const mp    = (player.mp / player.maxMp * 100).toFixed(1);
   const xpPct = (player.xp / (player.level * 100) * 100).toFixed(1);
@@ -9,6 +9,26 @@ export default function HUD({ player, floor }) {
         <span className="c-amb" style={{ fontSize: 13 }}>⚔️ {player.name}</span>
         <span className="muted">Lv.{player.level} &nbsp;·&nbsp; Etaj {floor}</span>
         <span className="c-amb" style={{ fontSize: 13 }}>🏆 {player.score}</span>
+        {onExit && (
+          <button
+            onClick={onExit}
+            title="Ieși din joc"
+            style={{
+              background: 'transparent',
+              border: '1px solid #3a0000',
+              color: 'var(--red)',
+              fontSize: 11,
+              padding: '2px 8px',
+              borderRadius: 2,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              letterSpacing: 1,
+              lineHeight: 1.4,
+            }}
+          >
+            ✕ MENIU
+          </button>
+        )}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
         <div className="bar-wrap">

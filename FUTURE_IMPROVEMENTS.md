@@ -104,3 +104,4 @@ A companion section (separate from the dungeon game) modelled on sites like [pbi
 - **Offline / PWA support** — cache the app shell and question bank so the game works without internet
 - **Export results as PDF** — teacher can export a class report or a pupil can export their progress summary
 - **Localisation** — the UI is in Romanian; an English version would make the project useful internationally
+- **More Questions** — new varied questions should be added to avoid repetition

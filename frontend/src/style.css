@@ -37,7 +37,7 @@ body::after {
   pointer-events: none; z-index: 9999;
 }
 
-#app, #root > div {
+#app {
   width: min(880px, 100vw);
   min-height: 100vh;
   display: flex;
@@ -225,3 +225,121 @@ body::after {
 
 @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
 .blink { animation: blink 1s infinite; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  #app {
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .panel {
+    padding: 10px 10px;
+  }
+
+  .title-vt {
+    font-size: clamp(34px, 12vw, 60px);
+    letter-spacing: 2px;
+  }
+
+  /* Combat action grid: 2 cols still OK but smaller text */
+  .grid2 {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  /* Three-col grids collapse to 1 col on phones */
+  .grid3 {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .btn {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  /* HUD top row — let items wrap */
+  .hbar {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* HUD bars: stack to single column */
+  .panel > div[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  .bar-val {
+    min-width: 40px;
+  }
+
+  /* Enemy sprite smaller */
+  .sprite {
+    font-size: 48px;
+  }
+
+  .ename {
+    font-size: 22px;
+  }
+
+  /* Code blocks scroll horizontally, don't overflow */
+  .code {
+    font-size: 11px;
+    padding: 8px 10px;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* Write input — 16px minimum prevents iOS zoom on focus */
+  .write-input {
+    font-size: 16px;
+  }
+
+  /* Log shorter on mobile */
+  .log {
+    max-height: 90px;
+    font-size: 11px;
+  }
+
+  /* Info boxes tighter */
+  .info-box {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+
+  .tag {
+    font-size: 9px;
+  }
+
+  .muted {
+    font-size: 10px;
+  }
+
+  /* Chapter chips — bigger touch targets on mobile */
+  .chip-btn {
+    padding: 7px 14px !important;
+    font-size: 12px !important;
+    min-height: 36px;
+  }
+}
+
+@media (max-width: 400px) {
+  /* Very small phones — stack combat buttons to 1 col */
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+
+  .btn {
+    font-size: 11px;
+    padding: 7px 8px;
+  }
+
+  .sprite {
+    font-size: 38px;
+  }
+
+  .ename {
+    font-size: 18px;
+  }
+}

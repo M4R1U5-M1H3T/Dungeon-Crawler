@@ -15,7 +15,7 @@ import ShopScreen from './components/screens/ShopScreen.jsx';
 import GameOverScreen from './components/screens/GameOverScreen.jsx';
 import VictoryScreen from './components/screens/VictoryScreen.jsx';
 
-export default function Game({ state, dispatch }) {
+export default function Game({ state, dispatch, onGradeChange }) {
   const { floors, enemies, usedChallengeIds, grade, selectedTopics } = state;
 
   const getChallenge = useCallback(async (opts) => {
@@ -40,9 +40,13 @@ export default function Game({ state, dispatch }) {
   const handleEnterDoor = useCallback(async () => {
     const fl = floors.find(f => f.id === state.floor);
     const room = fl.rooms[state.roomIdx];
-    const ch = await getChallenge({ topic: room.topic, maxDiff: Math.min(state.floor + 1, 3) });
+    const hasFilter = selectedTopics && selectedTopics.length > 0;
+    const ch = await getChallenge({
+      topic: hasFilter ? undefined : room.topic,
+      maxDiff: Math.min(state.floor + 1, 3),
+    });
     dispatch({ type: 'ENTER_DOOR', challenge: ch, opts: ch.options || [] });
-  }, [state.floor, state.roomIdx, floors, getChallenge, dispatch]);
+  }, [state.floor, state.roomIdx, floors, selectedTopics, getChallenge, dispatch]);
 
   const handleEnterWriteDoor = useCallback(async () => {
     const ch = await getChallenge({ type: 'write', maxDiff: 3 });
@@ -51,24 +55,26 @@ export default function Game({ state, dispatch }) {
 
   const handleAttack = useCallback(async () => {
     const enemy = state.enemy;
+    const hasFilter = selectedTopics && selectedTopics.length > 0;
     const ch = await getChallenge({
-      topic: enemy.topic,
+      topic: hasFilter ? undefined : enemy.topic,
       maxDiff: enemy.maxDiff,
-      type: enemy.questionType || undefined,
+      type: hasFilter ? undefined : (enemy.questionType || undefined),
     });
     dispatch({ type: 'C_ATTACK', challenge: ch, opts: ch.options || [] });
-  }, [state.enemy, getChallenge, dispatch]);
+  }, [state.enemy, selectedTopics, getChallenge, dispatch]);
 
   const handleSpell = useCallback(async () => {
     if (state.player.mp < 20) return;
     const enemy = state.enemy;
+    const hasFilter = selectedTopics && selectedTopics.length > 0;
     const ch = await getChallenge({
-      topic: enemy.topic,
+      topic: hasFilter ? undefined : enemy.topic,
       maxDiff: enemy.maxDiff,
-      type: enemy.questionType || undefined,
+      type: hasFilter ? undefined : (enemy.questionType || undefined),
     });
     dispatch({ type: 'C_SPELL', challenge: ch, opts: ch.options || [] });
-  }, [state.player, state.enemy, getChallenge, dispatch]);
+  }, [state.player, state.enemy, selectedTopics, getChallenge, dispatch]);
 
   const handlePotion = useCallback(() => {
     dispatch({ type: 'C_POTION' });
@@ -108,41 +114,47 @@ export default function Game({ state, dispatch }) {
   }, [state.challenge, dispatch]);
 
   const actions = {
-    onMenu: () => dispatch({ type: 'GOTO_MENU' }),
-    onHowTo: () => dispatch({ type: 'GOTO_HOWTO' }),
-    onStart: () => dispatch({ type: 'GOTO_NAME' }),
-    onSetNameDraft: (v) => dispatch({ type: 'SET_NAME_DRAFT', value: v }),
-    onConfirmName: (name) => dispatch({ type: 'CONFIRM_NAME', name }),
-    onEnterCombat: handleEnterCombat,
-    onEnterDoor: handleEnterDoor,
-    onEnterWriteDoor: handleEnterWriteDoor,
-    onCollect: () => dispatch({ type: 'COLLECT' }),
-    onAttack: handleAttack,
-    onSpell: handleSpell,
-    onPotion: handlePotion,
-    onFlee: handleFlee,
-    onCombatAnswer: handleCombatAnswer,
-    onDoorAnswer: handleDoorAnswer,
-    onWriteDoorAnswer: handleDoorAnswer,
-    onHint: () => dispatch({ type: 'SHOW_HINT' }),
-    onHintWrite: () => dispatch({ type: 'SHOW_HINT_WRITE' }),
-    onNextRoom: () => dispatch({ type: 'NEXT_ROOM' }),
-    onGotoShop: () => dispatch({ type: 'GOTO_SHOP' }),
-    onBuyPotion: () => dispatch({ type: 'BUY_POTION' }),
-    onBuyMana: () => dispatch({ type: 'BUY_MANA' }),
-    onBuyXP: () => dispatch({ type: 'BUY_XP' }),
-    onBuyMaxHP: () => dispatch({ type: 'BUY_MAXHP' }),
-    onCloseShop: () => dispatch({ type: 'CLOSE_SHOP' }),
-    onSetWriteAnswer: (v) => dispatch({ type: 'SET_WRITE_ANSWER', value: v }),
-    onRestart: () => dispatch({ type: 'RESTART' }),
+    onMenu:             () => dispatch({ type: 'GOTO_MENU' }),
+    onHowTo:            () => dispatch({ type: 'GOTO_HOWTO' }),
+    onStart:            () => dispatch({ type: 'GOTO_NAME' }),
+    onSetNameDraft:     (v) => dispatch({ type: 'SET_NAME_DRAFT', value: v }),
+    onConfirmName:      (name) => dispatch({ type: 'CONFIRM_NAME', name }),
+    onEnterCombat:      handleEnterCombat,
+    onEnterDoor:        handleEnterDoor,
+    onEnterWriteDoor:   handleEnterWriteDoor,
+    onCollect:          () => dispatch({ type: 'COLLECT' }),
+    onAttack:           handleAttack,
+    onSpell:            handleSpell,
+    onPotion:           handlePotion,
+    onFlee:             handleFlee,
+    onCombatAnswer:     handleCombatAnswer,
+    onDoorAnswer:       handleDoorAnswer,
+    onWriteDoorAnswer:  handleDoorAnswer,
+    onHint:             () => dispatch({ type: 'SHOW_HINT' }),
+    onHintWrite:        () => dispatch({ type: 'SHOW_HINT_WRITE' }),
+    onNextRoom:         () => dispatch({ type: 'NEXT_ROOM' }),
+    onGotoShop:         () => dispatch({ type: 'GOTO_SHOP' }),
+    onBuyPotion:        () => dispatch({ type: 'BUY_POTION' }),
+    onBuyMana:          () => dispatch({ type: 'BUY_MANA' }),
+    onBuyXP:            () => dispatch({ type: 'BUY_XP' }),
+    onBuyMaxHP:         () => dispatch({ type: 'BUY_MAXHP' }),
+    onCloseShop:        () => dispatch({ type: 'CLOSE_SHOP' }),
+    onSetWriteAnswer:   (v) => dispatch({ type: 'SET_WRITE_ANSWER', value: v }),
+    onRestart:          () => dispatch({ type: 'RESTART' }),
     onOpenChapterModal: (topicId) => dispatch({ type: 'OPEN_CHAPTER_MODAL', topicId }),
-    onCloseChapterModal: () => dispatch({ type: 'CLOSE_CHAPTER_MODAL' }),
-    onGotoLearn: (topicId) => dispatch({ type: 'GOTO_LEARN', topicId }),
-    onCloseLearn: () => dispatch({ type: 'CLOSE_LEARN' }),
-    onToggleTopic: (topicId) => dispatch({ type: 'TOGGLE_TOPIC', topicId }),
-    onClearTopics: () => dispatch({ type: 'CLEAR_TOPICS' }),
+    onCloseChapterModal:() => dispatch({ type: 'CLOSE_CHAPTER_MODAL' }),
+    onGotoLearn:        (topicId) => dispatch({ type: 'GOTO_LEARN', topicId }),
+    onCloseLearn:       () => dispatch({ type: 'CLOSE_LEARN' }),
+    onToggleTopic:      (topicId) => dispatch({ type: 'TOGGLE_TOPIC', topicId }),
+    onClearTopics:      () => dispatch({ type: 'CLEAR_TOPICS' }),
     onStartChapterQuiz: (topics) => dispatch({ type: 'START_CHAPTER_QUIZ', topics }),
-    onStartWeakQuiz: (topics) => dispatch({ type: 'START_CHAPTER_QUIZ', topics }),
+    onStartWeakQuiz:    (topics) => dispatch({ type: 'START_CHAPTER_QUIZ', topics }),
+    onGradeChange:      onGradeChange || ((g) => dispatch({ type: 'SET_GRADE', grade: g })),
+    onAbort: () => {
+      if (window.confirm('Ieși din joc? Progresul curent se va pierde.')) {
+        dispatch({ type: 'ABORT_GAME' });
+      }
+    },
   };
 
   const screenMap = {

@@ -9,7 +9,7 @@ export default function WriteDoorScreen({ state, actions }) {
 
   return (
     <>
-      <HUD player={player} floor={state.floor} />
+      <HUD player={player} floor={state.floor} onExit={actions.onAbort} />
       <ProgressBar state={state} />
       <div className="panel">
         <div className="hbar" style={{ marginBottom: 8 }}>

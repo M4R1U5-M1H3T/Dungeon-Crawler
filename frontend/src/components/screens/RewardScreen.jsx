@@ -4,7 +4,7 @@ export default function RewardScreen({ state, actions }) {
   const { player, msg, rewardLines, leveledUp } = state;
   return (
     <>
-      <HUD player={player} floor={state.floor} />
+      <HUD player={player} floor={state.floor} onExit={actions.onAbort} />
       <div className="panel ta-c">
         <div className="sprite c-g">🏆</div>
         <div className="ename c-g">VICTORIE!</div>

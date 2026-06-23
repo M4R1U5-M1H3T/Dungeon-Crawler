@@ -12,7 +12,7 @@ export default function ExploreScreen({ state, actions }) {
 
   return (
     <>
-      <HUD player={state.player} floor={state.floor} />
+      <HUD player={state.player} floor={state.floor} onExit={actions.onAbort} />
       <ProgressBar state={state} />
       {state.msg && (
         <div className="panel info-box" style={{ color: state.msgCls === 'danger' ? 'var(--red)' : state.msgCls === 'success' ? 'var(--g)' : 'var(--blu)' }}>

@@ -10,7 +10,7 @@ export default function CombatScreen({ state, actions }) {
 
   return (
     <>
-      <HUD player={p} floor={state.floor} />
+      <HUD player={p} floor={state.floor} onExit={actions.onAbort} />
       <div className="panel">
         <div className="hbar">
           <div>
@@ -40,7 +40,7 @@ export default function CombatScreen({ state, actions }) {
               <button className="btn amb" onClick={actions.onAttack}>⚔️ ATACĂ<br /><span className="muted">(15+ dmg · răspunde corect)</span></button>
               <button className="btn pur" onClick={actions.onSpell} disabled={p.mp < 20}>🔮 VRAJĂ<br /><span className="muted">(25+ dmg · cost 20 MP)</span></button>
               <button className="btn" onClick={actions.onPotion} disabled={p.potions === 0}>🧪 POȚIUNE<br /><span className="muted">{p.potions}x · +40 HP</span></button>
-              <button className="btn red" onClick={actions.onFlee} disabled={isBoss}>🏃 FUGĂ<br /><span className="muted">{isBoss ? 'Nu poți fugi de boss!' : '(20% șansă)'}</span></button>
+              <button className="btn red" onClick={actions.onFlee} disabled={isBoss}>🏃 FUGĂ<br /><span className="muted">{isBoss ? 'Nu poți fugi de boss!' : '(10% șansă)'}</span></button>
             </div>
           </>
         )}

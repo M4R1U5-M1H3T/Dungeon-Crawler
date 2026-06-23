@@ -32,7 +32,7 @@ const floors9 = [
     rooms:[
       { type:'DOOR',     topic:'operatori',  icon:'🚪' },
       { type:'COMBAT',   id:'loop_lich',     icon:'💀' },
-      { type:'TREASURE', potions:2, gold:20, icon:'💎' },
+      { type:'TREASURE', potions:1, gold:20, icon:'💎' },
       { type:'DOOR',     topic:'bucle',      icon:'🚪' },
       { type:'COMBAT',   id:'string_specter',icon:'👻' },
       { type:'BOSS',     id:'boss_loop_master',icon:'♛' },
@@ -43,7 +43,7 @@ const floors9 = [
     rooms:[
       { type:'COMBAT',   id:'list_demon',    icon:'😈' },
       { type:'DOOR',     topic:'șiruri',     icon:'🚪' },
-      { type:'TREASURE', potions:2, gold:30, icon:'💎' },
+      { type:'TREASURE', potions:1, gold:30, icon:'💎' },
       { type:'DOOR',     topic:'liste',      icon:'🚪' },
       { type:'COMBAT',   id:'func_phantom',  icon:'🌀' },
       { type:'COMBAT',   id:'dict_daemon',   icon:'📖' },
@@ -55,7 +55,7 @@ const floors9 = [
     rooms:[
       { type:'COMBAT',    id:'scribe_wraith', icon:'🖊️' },
       { type:'WRITE_DOOR',topic:'scriere',    icon:'✍️' },
-      { type:'TREASURE',  potions:2, gold:35, icon:'💎' },
+      { type:'TREASURE',  potions:1, gold:35, icon:'💎' },
       { type:'COMBAT',    id:'algo_golem',    icon:'🤖' },
       { type:'WRITE_DOOR',topic:'scriere',    icon:'✍️' },
       { type:'COMBAT',    id:'scribe_wraith', icon:'🖊️' },
@@ -93,7 +93,7 @@ const floors10 = [
     rooms:[
       { type:'DOOR',     topic:'tablouri',    icon:'🚪' },
       { type:'COMBAT',   id:'matrix_golem',   icon:'🟦' },
-      { type:'TREASURE', potions:2, gold:22,  icon:'💎' },
+      { type:'TREASURE', potions:1, gold:22,  icon:'💎' },
       { type:'DOOR',     topic:'matrici',     icon:'🚪' },
       { type:'COMBAT',   id:'sort_spirit',    icon:'🔀' },
       { type:'BOSS',     id:'boss10_matrix',  icon:'♛' },
@@ -104,7 +104,7 @@ const floors10 = [
     rooms:[
       { type:'COMBAT',   id:'sort_spirit',    icon:'🔀' },
       { type:'DOOR',     topic:'sortare',     icon:'🚪' },
-      { type:'TREASURE', potions:2, gold:30,  icon:'💎' },
+      { type:'TREASURE', potions:1, gold:30,  icon:'💎' },
       { type:'DOOR',     topic:'cautare',     icon:'🚪' },
       { type:'COMBAT',   id:'binary_beast',   icon:'⚡' },
       { type:'COMBAT',   id:'sort_spirit',    icon:'🔀' },
@@ -116,7 +116,7 @@ const floors10 = [
     rooms:[
       { type:'COMBAT',    id:'file_fiend',    icon:'📂' },
       { type:'WRITE_DOOR',topic:'scriere_10', icon:'✍️' },
-      { type:'TREASURE',  potions:2, gold:38, icon:'💎' },
+      { type:'TREASURE',  potions:1, gold:38, icon:'💎' },
       { type:'COMBAT',    id:'binary_beast',  icon:'⚡' },
       { type:'WRITE_DOOR',topic:'scriere_10', icon:'✍️' },
       { type:'COMBAT',    id:'file_fiend',    icon:'📂' },
@@ -154,7 +154,7 @@ const floors11 = [
     rooms:[
       { type:'DOOR',     topic:'recursivitate',   icon:'🚪' },
       { type:'COMBAT',   id:'backtrack_banshee',  icon:'👹' },
-      { type:'TREASURE', potions:2, gold:25,       icon:'💎' },
+      { type:'TREASURE', potions:1, gold:25,       icon:'💎' },
       { type:'DOOR',     topic:'backtracking',    icon:'🚪' },
       { type:'COMBAT',   id:'hanoi_horror',       icon:'🗼' },
       { type:'BOSS',     id:'boss11_backtrack',   icon:'♛' },
@@ -165,7 +165,7 @@ const floors11 = [
     rooms:[
       { type:'COMBAT',   id:'stack_stalker',      icon:'📚' },
       { type:'DOOR',     topic:'structuri_date',  icon:'🚪' },
-      { type:'TREASURE', potions:2, gold:32,       icon:'💎' },
+      { type:'TREASURE', potions:1, gold:32,       icon:'💎' },
       { type:'DOOR',     topic:'structuri_date',  icon:'🚪' },
       { type:'COMBAT',   id:'stack_stalker',      icon:'📚' },
       { type:'COMBAT',   id:'backtrack_banshee',  icon:'👹' },
@@ -177,7 +177,7 @@ const floors11 = [
     rooms:[
       { type:'COMBAT',    id:'oop_oracle',     icon:'🔮' },
       { type:'WRITE_DOOR',topic:'scriere_11',  icon:'✍️' },
-      { type:'TREASURE',  potions:2, gold:40,  icon:'💎' },
+      { type:'TREASURE',  potions:1, gold:40,  icon:'💎' },
       { type:'COMBAT',    id:'oop_oracle',     icon:'🔮' },
       { type:'WRITE_DOOR',topic:'scriere_11',  icon:'✍️' },
       { type:'COMBAT',    id:'oop_oracle',     icon:'🔮' },

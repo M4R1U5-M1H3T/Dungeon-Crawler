@@ -7,7 +7,7 @@ export default function HowToScreen({ actions }) {
         <p>⚔️ <span className="c-amb">ATACĂ</span> – Răspunde corect la o întrebare Python pentru a lovi inamicul.</p>
         <p>🔮 <span className="c-pur">VRAJĂ</span> – Costă <b>20 MP</b> dar face mai mult damage. Streak-ul crește daunele!</p>
         <p>🧪 <span className="c-g">POȚIUNE</span> – Recuperează <b>40 HP</b>. Poți cumpăra mai multe din magazin.</p>
-        <p>🏃 <span className="c-red">FUGĂ</span> – 20% șansă de reușită. <b>Nu funcționează împotriva boss-urilor!</b></p>
+        <p>🏃 <span className="c-red">FUGĂ</span> – 10% șansă de reușită. <b>Nu funcționează împotriva boss-urilor!</b></p>
         <p>🚪 <span className="c-blu">UȘI MC</span> – Alege răspunsul corect. Eroarea costă HP!</p>
         <p>✍️ <span className="c-cyn">UȘI SCRIERE</span> – Scrie cod Python corect. Hint costă <b>10 💰</b>!</p>
         <p>💡 <span className="muted">HINT MC</span> – Penalizare <b>-50 scor</b>. Hint SCRIERE – costă <b>10 💰 aur</b>.</p>

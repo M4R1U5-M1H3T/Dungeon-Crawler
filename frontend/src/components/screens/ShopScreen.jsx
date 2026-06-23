@@ -18,12 +18,12 @@ export default function ShopScreen({ state, actions }) {
   const { player: p, shopMsg } = state;
   return (
     <>
-      <HUD player={p} floor={state.floor} />
+      <HUD player={p} floor={state.floor} onExit={actions.onAbort} />
       <div className="panel">
         <div className="title-vt" style={{ fontSize: 36, textAlign: 'center' }}>🛒 MAGAZIN</div>
         <hr className="hr" />
         <div className="flex-col">
-          <ShopRow name="🧪 Poțiune de Sănătate" desc="Recuperare 40 HP" action={actions.onBuyPotion} cost={15} gold={p.gold} />
+          <ShopRow name="🧪 Poțiune de Sănătate" desc="Recuperare 30 HP" action={actions.onBuyPotion} cost={15} gold={p.gold} />
           <hr className="hr" />
           <ShopRow name="💙 Cristal de Mana" desc="Recuperare 30 MP" action={actions.onBuyMana} cost={20} gold={p.gold} />
           <hr className="hr" />

@@ -4,7 +4,7 @@ export class Player {
     this.hp      = 100; this.maxHp  = 100;
     this.mp      = 60;  this.maxMp  = 60;
     this.xp      = 0;   this.level  = 1;
-    this.potions = 3;   this.gold   = 0;
+    this.potions = 2;   this.gold   = 0;
     this.score   = 0;   this.streak = 0;
   }
   isAlive()    { return this.hp > 0; }
