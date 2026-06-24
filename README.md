@@ -127,3 +127,5 @@ Serve `dist/` with any static file server, pointing `/api` at the backend.
 ## 📄 See Also
 
 [FUTURE_IMPROVEMENTS.md](./FUTURE_IMPROVEMENTS.md) — planned features and long-term vision.
+
+[Deployed Application](https://dungeon-crawler-teal.vercel.app) — a little "demo" test of the application.
