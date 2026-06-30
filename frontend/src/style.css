@@ -343,3 +343,50 @@ body::after {
     font-size: 18px;
   }
 }
+
+/* ===== After-credits roll (Minecraft-style) ===== */
+@keyframes creditsRoll {
+  0%   { transform: translateY(70vh); }   /* start just below the visible edge so text appears quickly */
+  100% { transform: translateY(-100%); }
+}
+.credits-roll {
+  animation-name: creditsRoll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+/* ===== Sleek menu credit footer ===== */
+.credits-foot {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--brd);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--dg);
+  text-align: center;
+}
+.credits-foot strong { color: var(--txt); }
+.credits-link {
+  background: transparent;
+  border: 1px solid var(--brd);
+  border-radius: 14px;
+  color: var(--amb);
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 5px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.credits-link:hover {
+  border-color: var(--amb);
+  background: rgba(255,179,0,0.12);
+  box-shadow: 0 0 10px rgba(255,179,0,0.25);
+}
+@media (prefers-reduced-motion: reduce) {
+  .credits-roll { animation-duration: 90s !important; }
+}

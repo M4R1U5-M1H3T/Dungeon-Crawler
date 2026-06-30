@@ -14,6 +14,7 @@ import RewardScreen from './components/screens/RewardScreen.jsx';
 import ShopScreen from './components/screens/ShopScreen.jsx';
 import GameOverScreen from './components/screens/GameOverScreen.jsx';
 import VictoryScreen from './components/screens/VictoryScreen.jsx';
+import CreditsScreen from './components/screens/CreditsScreen.jsx';
 
 export default function Game({ state, dispatch, onGradeChange }) {
   const { floors, enemies, usedChallengeIds, grade, selectedTopics } = state;
@@ -116,6 +117,7 @@ export default function Game({ state, dispatch, onGradeChange }) {
   const actions = {
     onMenu:             () => dispatch({ type: 'GOTO_MENU' }),
     onHowTo:            () => dispatch({ type: 'GOTO_HOWTO' }),
+    onGotoCredits:      () => dispatch({ type: 'GOTO_CREDITS' }),
     onStart:            () => dispatch({ type: 'GOTO_NAME' }),
     onSetNameDraft:     (v) => dispatch({ type: 'SET_NAME_DRAFT', value: v }),
     onConfirmName:      (name) => dispatch({ type: 'CONFIRM_NAME', name }),
@@ -170,6 +172,7 @@ export default function Game({ state, dispatch, onGradeChange }) {
     SHOP:       <ShopScreen state={state} actions={actions} />,
     GAME_OVER:  <GameOverScreen state={state} actions={actions} />,
     VICTORY:    <VictoryScreen state={state} actions={actions} />,
+    CREDITS:    <CreditsScreen state={state} actions={actions} />,
   };
 
   return (

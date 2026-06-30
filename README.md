@@ -29,16 +29,18 @@ Syntax Sorcerer is an educational web-based RPG for Romanian high school student
 
 The game covers all three years of Romanian high school Python Informatics, switchable via a dropdown in the top-right corner. Selecting a new grade resets the dungeon to the matching floors and question pool.
 
-**Clasa a 9-a — Bazele Python**
-Variabile & Tipuri · Operatori · Condiționale · Bucle · Șiruri · Liste · Funcții · Dicționare · Tupluri
+**Clasa a 9-a — Bazele Python & Structuri Liniare**
+Variabile · Operatori · Condiționale · Bucle · Liste · Funcții · Sortare · Căutare · Fișiere Text · Stive & Cozi
 
-**Clasa a 10-a — Structuri de Date & Algoritmi**
-Tablouri 1D · Matrici 2D · Sortare · Căutare Binară · Interclasare · Fișiere Text
+**Clasa a 10-a — Tablouri, Șiruri & Recursivitate**
+Șiruri · Dicționare · Tupluri · Tablouri 1D · Matrici 2D · Recursivitate
 
-**Clasa a 11-a — Algoritmi Avansați & OOP**
-Recursivitate · Backtracking · Stive & Cozi · Programare Orientată pe Obiecte
+**Clasa a 11-a — Algoritmi Avansați, Grafuri & OOP**
+Backtracking · Grafuri (reprezentare, BFS & DFS) · Programare Orientată pe Obiecte
 
-Each grade has its own dungeon (4 floors, 10–13 enemies) with ~110 questions.
+> Curriculumul a fost reorganizat conform programei MEN actuale: șirurile, dicționarele și tuplurile la clasa a X-a; sortarea, căutarea, fișierele și stivele/cozile la clasa a IX-a; recursivitatea la clasa a X-a; iar BFS într-un capitol nou de **Grafuri** la clasa a XI-a.
+
+Each grade has its own dungeon (4 floors) with a curriculum-aligned question pool (340+ questions in total).
 
 ---
 
@@ -61,7 +63,7 @@ Dungeon-Crawler/
 ├── backend/
 │   ├── server.js              # Express entry point (port 3001)
 │   ├── data/
-│   │   ├── challenges.js      # 330 questions tagged by grade + topic
+│   │   ├── challenges.js      # 340+ questions tagged by grade + topic
 │   │   └── dungeon.js         # Grade-keyed floors & enemies {9:{…}, 10:{…}, 11:{…}}
 │   ├── services/
 │   │   └── validator.js       # Levenshtein fuzzy-match for write answers
@@ -83,7 +85,7 @@ Dungeon-Crawler/
         │   ├── gameReducer.js # useReducer — all game actions + per-topic stats
         │   └── initialState.js
         └── components/
-            ├── screens/       # 12 screens (Menu, Learn, Combat, Door, Shop, …)
+            ├── screens/       # 13 screens (Menu, Learn, Combat, Door, Shop, Credits, …)
             └── ui/            # HUD, ProgressBar, ChallengeWidget, WriteWidget
 ```
 
@@ -121,6 +123,14 @@ Open **http://localhost:5173**. Vite proxies all `/api` requests to the backend 
 cd frontend && npm run build   # output in frontend/dist/
 ```
 Serve `dist/` with any static file server, pointing `/api` at the backend.
+
+---
+
+## ✦ Autor
+
+**Marius-Stefan Mihet** — student la **Universitatea Babeș-Bolyai (UBB)**, Informatică în limba engleză (*Computer Science in English*).
+
+Conceptul, design-ul jocului și implementarea (frontend + backend) îi aparțin. Jocul include un **generic „After Credits”** în stil Minecraft, accesibil după ecranul de victorie și din meniul principal.
 
 ---
 

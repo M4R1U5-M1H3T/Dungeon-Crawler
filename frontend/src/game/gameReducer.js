@@ -47,6 +47,9 @@ export function gameReducer(state, action) {
     case 'GOTO_HOWTO':
       return { ...state, screen: 'HOWTO' };
 
+    case 'GOTO_CREDITS':
+      return { ...state, screen: 'CREDITS', chapterModal: null };
+
     case 'GOTO_NAME':
       return { ...state, screen: 'NAME' };
 

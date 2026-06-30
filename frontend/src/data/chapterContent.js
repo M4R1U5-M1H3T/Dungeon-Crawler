@@ -201,59 +201,6 @@ else:
       ],
     },
     {
-      id: 'șiruri',
-      name: 'Șiruri de caractere',
-      icon: '📝',
-      summary: 'Indexare, slicing, metode și f-strings.',
-      sections: [
-        {
-          title: 'Indexare și slicing',
-          body: 'Indexul începe de la 0. Indici negativi numără de la sfârșit.',
-          code: `s = "Python"
-print(s[0])       # P
-print(s[-1])      # n
-print(s[1:4])     # yth
-print(s[::-1])    # nohtyP (inversat)`,
-        },
-        {
-          title: 'Metode esențiale',
-          body: 'Metodele de string returnează un șir nou (string-urile sunt imutabile).',
-          code: `s = "  Salut Lume  "
-print(s.lower())         # "  salut lume  "
-print(s.upper())         # "  SALUT LUME  "
-print(s.strip())         # "Salut Lume"
-print(s.replace("Lume", "Python"))
-print("a,b,c".split(","))  # ['a', 'b', 'c']
-print(",".join(["a","b","c"])) # "a,b,c"`,
-        },
-        {
-          title: 'f-strings (formatare modernă)',
-          body: 'f-string-urile evaluează expresii între {}.',
-          code: `nume = "Ana"
-varsta = 17
-print(f"Mă numesc {nume} și am {varsta} ani.")
-print(f"2 la puterea 10 = {2**10}")
-print(f"Pi ≈ {3.14159:.2f}")   # 2 zecimale`,
-        },
-        {
-          title: 'Verificări utile',
-          body: 'in, not in, startswith, endswith, isdigit, isalpha',
-          code: `s = "Python3"
-print("Py" in s)          # True
-print(s.startswith("Py")) # True
-print(s.isdigit())        # False
-print("123".isdigit())    # True`,
-        },
-        {
-          title: '⚠️ Imutabilitate',
-          body: 'Nu poți modifica un caracter direct. Trebuie să creezi un șir nou.',
-          code: `s = "abc"
-# s[0] = "A"  → TypeError!
-s = "A" + s[1:]   # "Abc" — corect`,
-        },
-      ],
-    },
-    {
       id: 'liste',
       name: 'Liste',
       icon: '📋',
@@ -375,6 +322,292 @@ persoane.sort(key=lambda p: p[1])  # sortare după vârstă`,
       ],
     },
     {
+      id: 'sortare',
+      name: 'Algoritmi de Sortare',
+      icon: '🔃',
+      summary: 'Bubble, selection, insertion sort — implementare și complexitate.',
+      sections: [
+        {
+          title: 'Bubble Sort — O(n²)',
+          body: 'Compară perechi adiacente și le interschimbă dacă sunt în ordine greșită.',
+          code: `def bubble_sort(v):
+    n = len(v)
+    for i in range(n - 1):
+        for j in range(n - 1 - i):
+            if v[j] > v[j + 1]:
+                v[j], v[j+1] = v[j+1], v[j]
+    return v`,
+        },
+        {
+          title: 'Selection Sort — O(n²)',
+          body: 'La fiecare pas, găsește minimul din rest și îl pune la locul lui.',
+          code: `def selection_sort(v):
+    n = len(v)
+    for i in range(n):
+        min_idx = i
+        for j in range(i + 1, n):
+            if v[j] < v[min_idx]:
+                min_idx = j
+        v[i], v[min_idx] = v[min_idx], v[i]
+    return v`,
+        },
+        {
+          title: 'Insertion Sort — O(n²)',
+          body: 'Inserează pe rând fiecare element la locul potrivit în subvectorul deja sortat.',
+          code: `def insertion_sort(v):
+    for i in range(1, len(v)):
+        cheie = v[i]
+        j = i - 1
+        while j >= 0 and v[j] > cheie:
+            v[j + 1] = v[j]
+            j -= 1
+        v[j + 1] = cheie
+    return v`,
+        },
+        {
+          title: 'sorted() și .sort() în Python',
+          body: 'Python folosește Timsort — O(n log n). sorted() returnează o listă nouă; .sort() modifică pe loc.',
+          code: `v = [3, 1, 4, 1, 5, 9]
+print(sorted(v))                  # listă nouă
+v.sort()                           # modifică v
+v.sort(reverse=True)               # descrescător
+persoane.sort(key=lambda p: p[1]) # după criteriu`,
+        },
+        {
+          title: 'Complexitate comparativă',
+          body: 'Bubble/Selection/Insertion: O(n²). Merge/Quick: O(n log n). Timsort (Python): O(n log n).',
+          code: `# Regula practică:
+# n < 1000  → orice merge
+# n < 10⁶  → O(n log n) necesar
+# n > 10⁷  → O(n) dacă e posibil`,
+        },
+      ],
+    },
+    {
+      id: 'cautare',
+      name: 'Căutare',
+      icon: '🔍',
+      summary: 'Căutare liniară și binară.',
+      sections: [
+        {
+          title: 'Căutare liniară — O(n)',
+          body: 'Parcurge vectorul element cu element. Funcționează pe orice vector.',
+          code: `def cauta_liniar(v, tinta):
+    for i in range(len(v)):
+        if v[i] == tinta:
+            return i
+    return -1   # nu s-a găsit`,
+        },
+        {
+          title: 'Căutare binară — O(log n)',
+          body: 'Funcționează DOAR pe vectori SORTAȚI. Înjumătățește spațiul la fiecare pas.',
+          code: `def cauta_binar(v, tinta):
+    st, dr = 0, len(v) - 1
+    while st <= dr:
+        mij = (st + dr) // 2
+        if v[mij] == tinta: return mij
+        elif v[mij] < tinta: st = mij + 1
+        else: dr = mij - 1
+    return -1`,
+        },
+        {
+          title: 'Câți pași face binary search?',
+          body: 'Numărul maxim de pași = ⌊log₂(n)⌋ + 1',
+          code: `# n=8  → max 4 pași
+# n=16 → max 5 pași
+# n=1M → max 20 pași  ← O(log n) e RAPID!
+
+import math
+print(math.ceil(math.log2(1000000)))  # 20`,
+        },
+        {
+          title: 'bisect — modulul Python',
+          body: 'Python are bisect.bisect_left / bisect_right pentru căutare binară pe liste sortate.',
+          code: `import bisect
+v = [1, 3, 4, 7, 9]
+poz = bisect.bisect_left(v, 4)   # 2
+bisect.insort(v, 5)               # inserează și menține ordinea`,
+        },
+        {
+          title: '⚠️ Binary search pe nesortat',
+          body: 'Binary search pe un vector nesortat dă rezultate greșite!',
+          code: `v = [3, 1, 4, 1, 5]  # nesortat!
+# cauta_binar(v, 1) → probabil -1, deși există!
+# Întâi sortezi, APOI cauți binar.`,
+        },
+      ],
+    },
+    {
+      id: 'fisiere',
+      name: 'Fișiere Text',
+      icon: '💾',
+      summary: 'Citire, scriere, moduri de deschidere.',
+      sections: [
+        {
+          title: 'Deschiderea fișierelor cu with',
+          body: '"r"=citire, "w"=scriere (suprascrie), "a"=adăugare, "r+"=citire+scriere',
+          code: `with open("date.txt", "r") as f:
+    continut = f.read()
+
+with open("rezultat.txt", "w") as f:
+    f.write("Salut!\\n")`,
+        },
+        {
+          title: 'Citire linie cu linie',
+          body: 'Cel mai eficient mod de a citi fișiere mari.',
+          code: `with open("date.txt", "r") as f:
+    for linie in f:
+        linie = linie.strip()  # elimină \\n
+        print(linie)
+
+# SAU toate liniile odată:
+with open("date.txt") as f:
+    linii = f.readlines()  # listă cu '\\n' inclus`,
+        },
+        {
+          title: 'Citire și procesare date numerice',
+          body: 'Pattern tipic: citire → split → conversie → procesare.',
+          code: `with open("numere.txt") as f:
+    n = int(f.readline())
+    v = list(map(int, f.readline().split()))
+
+# SAU toate numerele din fișier:
+with open("numere.txt") as f:
+    numere = [int(x) for line in f for x in line.split()]`,
+        },
+        {
+          title: 'Scriere formatată',
+          body: 'Folosește f-string sau format() pentru output frumos.',
+          code: `rezultate = [("Ana", 9.5), ("Ion", 7.0), ("Mia", 10)]
+with open("note.txt", "w") as f:
+    for nume, nota in rezultate:
+        f.write(f"{nume}: {nota:.1f}\\n")`,
+        },
+        {
+          title: '⚠️ Encoding',
+          body: 'Pentru caractere românești (ă, î, â, ș, ț), specifică encoding="utf-8".',
+          code: `with open("roman.txt", "r", encoding="utf-8") as f:
+    text = f.read()
+
+with open("roman.txt", "w", encoding="utf-8") as f:
+    f.write("Ș, ț, ă, î, â")`,
+        },
+      ],
+    },
+    {
+      id: 'stive_cozi',
+      name: 'Stive & Cozi',
+      icon: '📚',
+      summary: 'Structuri liniare: stivă (LIFO), coadă (FIFO), deque și liste înlănțuite.',
+      sections: [
+        {
+          title: 'Stiva (Stack) — LIFO',
+          body: 'Last In First Out. Implementare cu listă Python.',
+          code: `stiva = []
+stiva.append(1)   # push
+stiva.append(2)
+stiva.append(3)
+print(stiva.pop()) # 3 — LIFO
+print(stiva[-1])   # 2 — vârful stivei fără pop
+
+# Utilizări: undo, parsare expresii, DFS`,
+        },
+        {
+          title: 'Coada (Queue) — FIFO',
+          body: 'First In First Out. Folosește collections.deque pentru O(1) la ambele capete.',
+          code: `from collections import deque
+coada = deque()
+coada.append(1)      # enqueue la dreapta
+coada.append(2)
+coada.append(3)
+print(coada.popleft())  # 1 — FIFO
+
+# Utilizări: BFS, procesare în ordine`,
+        },
+        {
+          title: 'Deque — dublu capăt',
+          body: 'appendleft/popleft O(1). Util pentru sliding window și BFS.',
+          code: `from collections import deque
+d = deque([1, 2, 3])
+d.appendleft(0)    # [0, 1, 2, 3]
+d.append(4)        # [0, 1, 2, 3, 4]
+d.popleft()        # 0
+d.pop()            # 4
+d.rotate(1)        # [3, 1, 2]`,
+        },
+        {
+          title: 'Lista înlănțuită',
+          body: 'Noduri conectate prin referințe. Insert/delete O(1) la capete, acces O(n).',
+          code: `class Nod:
+    def __init__(self, val):
+        self.val = val
+        self.urmator = None
+
+class ListaInlantuita:
+    def __init__(self): self.cap = None
+    def adauga_inceput(self, val):
+        nou = Nod(val)
+        nou.urmator = self.cap
+        self.cap = nou`,
+        },
+      ],
+    },
+  ],
+  10: [
+    {
+      id: 'șiruri',
+      name: 'Șiruri de caractere',
+      icon: '📝',
+      summary: 'Indexare, slicing, metode și f-strings.',
+      sections: [
+        {
+          title: 'Indexare și slicing',
+          body: 'Indexul începe de la 0. Indici negativi numără de la sfârșit.',
+          code: `s = "Python"
+print(s[0])       # P
+print(s[-1])      # n
+print(s[1:4])     # yth
+print(s[::-1])    # nohtyP (inversat)`,
+        },
+        {
+          title: 'Metode esențiale',
+          body: 'Metodele de string returnează un șir nou (string-urile sunt imutabile).',
+          code: `s = "  Salut Lume  "
+print(s.lower())         # "  salut lume  "
+print(s.upper())         # "  SALUT LUME  "
+print(s.strip())         # "Salut Lume"
+print(s.replace("Lume", "Python"))
+print("a,b,c".split(","))  # ['a', 'b', 'c']
+print(",".join(["a","b","c"])) # "a,b,c"`,
+        },
+        {
+          title: 'f-strings (formatare modernă)',
+          body: 'f-string-urile evaluează expresii între {}.',
+          code: `nume = "Ana"
+varsta = 17
+print(f"Mă numesc {nume} și am {varsta} ani.")
+print(f"2 la puterea 10 = {2**10}")
+print(f"Pi ≈ {3.14159:.2f}")   # 2 zecimale`,
+        },
+        {
+          title: 'Verificări utile',
+          body: 'in, not in, startswith, endswith, isdigit, isalpha',
+          code: `s = "Python3"
+print("Py" in s)          # True
+print(s.startswith("Py")) # True
+print(s.isdigit())        # False
+print("123".isdigit())    # True`,
+        },
+        {
+          title: '⚠️ Imutabilitate',
+          body: 'Nu poți modifica un caracter direct. Trebuie să creezi un șir nou.',
+          code: `s = "abc"
+# s[0] = "A"  → TypeError!
+s = "A" + s[1:]   # "Abc" — corect`,
+        },
+      ],
+    },
+    {
       id: 'dicționare',
       name: 'Dicționare',
       icon: '📖',
@@ -479,9 +712,6 @@ print(t.index(3))   # 3 (prima poziție)`,
         },
       ],
     },
-  ],
-
-  10: [
     {
       id: 'tablouri',
       name: 'Tablouri 1D',
@@ -523,7 +753,7 @@ for x in v:
 # {1:1, 2:2, 3:3, 4:1}`,
         },
         {
-          title: 'Interclasarea a doi vectori sorteazi',
+          title: 'Interclasarea a doi vectori sortați',
           body: 'Algoritmul clasic de interclasare în O(n+m).',
           code: `def interclasare(a, b):
     rez, i, j = [], 0, 0
@@ -607,182 +837,6 @@ print(corect[1][0])   # 0 — independent`,
       ],
     },
     {
-      id: 'sortare',
-      name: 'Algoritmi de Sortare',
-      icon: '🔃',
-      summary: 'Bubble, selection, insertion sort — implementare și complexitate.',
-      sections: [
-        {
-          title: 'Bubble Sort — O(n²)',
-          body: 'Compară perechi adiacente și le interschimbă dacă sunt în ordine greșită.',
-          code: `def bubble_sort(v):
-    n = len(v)
-    for i in range(n - 1):
-        for j in range(n - 1 - i):
-            if v[j] > v[j + 1]:
-                v[j], v[j+1] = v[j+1], v[j]
-    return v`,
-        },
-        {
-          title: 'Selection Sort — O(n²)',
-          body: 'La fiecare pas, găsește minimul din rest și îl pune la locul lui.',
-          code: `def selection_sort(v):
-    n = len(v)
-    for i in range(n):
-        min_idx = i
-        for j in range(i + 1, n):
-            if v[j] < v[min_idx]:
-                min_idx = j
-        v[i], v[min_idx] = v[min_idx], v[i]
-    return v`,
-        },
-        {
-          title: 'Insertion Sort — O(n²)',
-          body: 'Inserează pe rând fiecare element la locul potrivit în subvectorul deja sortat.',
-          code: `def insertion_sort(v):
-    for i in range(1, len(v)):
-        cheie = v[i]
-        j = i - 1
-        while j >= 0 and v[j] > cheie:
-            v[j + 1] = v[j]
-            j -= 1
-        v[j + 1] = cheie
-    return v`,
-        },
-        {
-          title: 'sorted() și .sort() în Python',
-          body: 'Python folosește Timsort — O(n log n). sorted() returnează o listă nouă; .sort() modifică pe loc.',
-          code: `v = [3, 1, 4, 1, 5, 9]
-print(sorted(v))                  # listă nouă
-v.sort()                           # modifică v
-v.sort(reverse=True)               # descrescător
-persoane.sort(key=lambda p: p[1]) # după criteriu`,
-        },
-        {
-          title: 'Complexitate comparativă',
-          body: 'Bubble/Selection/Insertion: O(n²). Merge/Quick: O(n log n). Timsort (Python): O(n log n).',
-          code: `# Regula practică:
-# n < 1000  → orice merge
-# n < 10⁶  → O(n log n) necesar
-# n > 10⁷  → O(n) dacă e posibil`,
-        },
-      ],
-    },
-    {
-      id: 'cautare',
-      name: 'Căutare',
-      icon: '🔍',
-      summary: 'Căutare liniară și binară.',
-      sections: [
-        {
-          title: 'Căutare liniară — O(n)',
-          body: 'Parcurge vectorul element cu element. Funcționează pe orice vector.',
-          code: `def cauta_liniar(v, tinta):
-    for i in range(len(v)):
-        if v[i] == tinta:
-            return i
-    return -1   # nu s-a găsit`,
-        },
-        {
-          title: 'Căutare binară — O(log n)',
-          body: 'Funcționează DOAR pe vectori SORTEAZI. Înjumătățește spațiul la fiecare pas.',
-          code: `def cauta_binar(v, tinta):
-    st, dr = 0, len(v) - 1
-    while st <= dr:
-        mij = (st + dr) // 2
-        if v[mij] == tinta: return mij
-        elif v[mij] < tinta: st = mij + 1
-        else: dr = mij - 1
-    return -1`,
-        },
-        {
-          title: 'Câți pași face binary search?',
-          body: 'Numărul maxim de pași = ⌊log₂(n)⌋ + 1',
-          code: `# n=8  → max 4 pași
-# n=16 → max 5 pași
-# n=1M → max 20 pași  ← O(log n) e RAPID!
-
-import math
-print(math.ceil(math.log2(1000000)))  # 20`,
-        },
-        {
-          title: 'bisect — modulul Python',
-          body: 'Python are bisect.bisect_left / bisect_right pentru căutare binară pe liste sortate.',
-          code: `import bisect
-v = [1, 3, 4, 7, 9]
-poz = bisect.bisect_left(v, 4)   # 2
-bisect.insort(v, 5)               # inserează și menține ordinea`,
-        },
-        {
-          title: '⚠️ Binary search pe nesortat',
-          body: 'Binary search pe un vector nesortat dă rezultate greșite!',
-          code: `v = [3, 1, 4, 1, 5]  # nesortat!
-# cauta_binar(v, 1) → probabil -1, deși există!
-# Întâi sortezi, APOI cauți binar.`,
-        },
-      ],
-    },
-    {
-      id: 'fisiere',
-      name: 'Fișiere Text',
-      icon: '💾',
-      summary: 'Citire, scriere, moduri de deschidere.',
-      sections: [
-        {
-          title: 'Deschiderea fișierelor cu with',
-          body: '"r"=citire, "w"=scriere (suprascrie), "a"=adăugare, "r+"=citire+scriere',
-          code: `with open("date.txt", "r") as f:
-    continut = f.read()
-
-with open("rezultat.txt", "w") as f:
-    f.write("Salut!\\n")`,
-        },
-        {
-          title: 'Citire linie cu linie',
-          body: 'Cel mai eficient mod de a citi fișiere mari.',
-          code: `with open("date.txt", "r") as f:
-    for linie in f:
-        linie = linie.strip()  # elimină \\n
-        print(linie)
-
-# SAU toate liniile odată:
-with open("date.txt") as f:
-    linii = f.readlines()  # listă cu '\\n' inclus`,
-        },
-        {
-          title: 'Citire și procesare date numerice',
-          body: 'Pattern tipic: citire → split → conversie → procesare.',
-          code: `with open("numere.txt") as f:
-    n = int(f.readline())
-    v = list(map(int, f.readline().split()))
-
-# SAU toate numerele din fișier:
-with open("numere.txt") as f:
-    numere = [int(x) for line in f for x in line.split()]`,
-        },
-        {
-          title: 'Scriere formatată',
-          body: 'Folosește f-string sau format() pentru output frumos.',
-          code: `rezultate = [("Ana", 9.5), ("Ion", 7.0), ("Mia", 10)]
-with open("note.txt", "w") as f:
-    for nume, nota in rezultate:
-        f.write(f"{nume}: {nota:.1f}\\n")`,
-        },
-        {
-          title: '⚠️ Encoding',
-          body: 'Pentru caractere românești (ă, î, â, ș, ț), specifică encoding="utf-8".',
-          code: `with open("roman.txt", "r", encoding="utf-8") as f:
-    text = f.read()
-
-with open("roman.txt", "w", encoding="utf-8") as f:
-    f.write("Ș, ț, ă, î, â")`,
-        },
-      ],
-    },
-  ],
-
-  11: [
-    {
       id: 'recursivitate',
       name: 'Recursivitate',
       icon: '🌀',
@@ -851,6 +905,8 @@ sys.setrecursionlimit(10000)
         },
       ],
     },
+  ],
+  11: [
     {
       id: 'backtracking',
       name: 'Backtracking',
@@ -923,54 +979,42 @@ sys.setrecursionlimit(10000)
       ],
     },
     {
-      id: 'structuri_date',
-      name: 'Structuri de Date',
-      icon: '🏗️',
-      summary: 'Stivă, coadă, deque, liste înlănțuite.',
+      id: 'grafuri',
+      name: 'Grafuri',
+      icon: '🕸️',
+      summary: 'Reprezentarea grafurilor și parcurgerea lor: BFS (în lățime) și DFS (în adâncime).',
       sections: [
         {
-          title: 'Stiva (Stack) — LIFO',
-          body: 'Last In First Out. Implementare cu listă Python.',
-          code: `stiva = []
-stiva.append(1)   # push
-stiva.append(2)
-stiva.append(3)
-print(stiva.pop()) # 3 — LIFO
-print(stiva[-1])   # 2 — vârful stivei fără pop
+          title: 'Ce este un graf?',
+          body: 'Un graf G = (V, E) are o mulțime de vârfuri (noduri) V și o mulțime de muchii E care leagă perechi de vârfuri. Într-un graf neorientat muchiile sunt bidirecționale; într-unul orientat au un sens.',
+          code: `# Exemple din viața reală:
+#  - rețea de orașe legate prin drumuri
+#  - prieteni într-o rețea socială
+#  - pagini web legate prin linkuri
 
-# Utilizări: undo, parsare expresii, DFS`,
+# graf neorientat: triunghiul 1-2-3
+# muchii: {1,2}, {1,3}, {2,3}`,
         },
         {
-          title: 'Coada (Queue) — FIFO',
-          body: 'First In First Out. Folosește collections.deque pentru O(1) la ambele capete.',
-          code: `from collections import deque
-coada = deque()
-coada.append(1)      # enqueue la dreapta
-coada.append(2)
-coada.append(3)
-print(coada.popleft())  # 1 — FIFO
-
-# Utilizări: BFS, procesare în ordine`,
+          title: 'Reprezentarea grafurilor',
+          body: 'Cea mai folosită reprezentare este lista de adiacență (un dicționar nod → listă de vecini), eficientă pentru grafuri rare. Alternativ, matricea de adiacență folosește o tablă n×n cu 1/0.',
+          code: `# Lista de adiacență (dicționar)
+graf = {
+    1: [2, 3],
+    2: [1, 4],
+    3: [1, 4],
+    4: [2, 3],
+}
+print(graf[1])        # vecinii lui 1: [2, 3]
+print(len(graf[1]))   # gradul lui 1: 2`,
         },
         {
-          title: 'Deque — dublu capăt',
-          body: 'appendleft/popleft O(1). Util pentru sliding window și BFS.',
-          code: `from collections import deque
-d = deque([1, 2, 3])
-d.appendleft(0)    # [0, 1, 2, 3]
-d.append(4)        # [0, 1, 2, 3, 4]
-d.popleft()        # 0
-d.pop()            # 4
-d.rotate(1)        # [3, 1, 2]`,
-        },
-        {
-          title: 'BFS cu coadă',
-          body: 'Breadth-First Search explorează graful nivel cu nivel.',
+          title: 'Parcurgerea în lățime (BFS)',
+          body: 'BFS folosește o coadă (FIFO) și explorează graful nivel cu nivel. Marchează nodurile vizitate pentru a nu le procesa de două ori. Într-un graf neponderat, BFS găsește drumul cu cele mai puține muchii.',
           code: `from collections import deque
 def bfs(graf, start):
-    viz = set()
+    viz = {start}
     coada = deque([start])
-    viz.add(start)
     while coada:
         nod = coada.popleft()
         print(nod)
@@ -980,19 +1024,42 @@ def bfs(graf, start):
                 coada.append(vecin)`,
         },
         {
-          title: 'Lista înlănțuită',
-          body: 'Noduri conectate prin referințe. Insert/delete O(1) la capete, acces O(n).',
-          code: `class Nod:
-    def __init__(self, val):
-        self.val = val
-        self.urmator = None
-
-class ListaInlantuita:
-    def __init__(self): self.cap = None
-    def adauga_inceput(self, val):
-        nou = Nod(val)
-        nou.urmator = self.cap
-        self.cap = nou`,
+          title: 'Parcurgerea în adâncime (DFS)',
+          body: 'DFS merge cât mai în adâncime pe un drum înainte de a se întoarce. Folosește o stivă — explicit, sau implicit prin stiva de apeluri a recursivității.',
+          code: `def dfs(graf, nod, viz=None):
+    if viz is None:
+        viz = set()
+    viz.add(nod)
+    print(nod)
+    for vecin in graf[nod]:
+        if vecin not in viz:
+            dfs(graf, vecin, viz)
+    return viz`,
+        },
+        {
+          title: 'Aplicație: există drum între două noduri?',
+          body: 'Pornim un BFS (sau DFS) din nodul sursă; dacă ajungem la nodul țintă, există drum. Aceeași parcurgere stă la baza calculului distanțelor și al componentelor conexe.',
+          code: `from collections import deque
+def exista_drum(graf, start, tinta):
+    viz = {start}
+    coada = deque([start])
+    while coada:
+        nod = coada.popleft()
+        if nod == tinta:
+            return True
+        for vecin in graf[nod]:
+            if vecin not in viz:
+                viz.add(vecin)
+                coada.append(vecin)
+    return False`,
+        },
+        {
+          title: '⚠️ Marcarea nodurilor vizitate',
+          body: 'Dacă nu marchezi nodurile vizitate, o muchie care formează un ciclu te trimite înapoi la un nod deja procesat și parcurgerea intră în buclă infinită. Marchează un nod ca vizitat în momentul în care îl adaugi în coadă/stivă.',
+          code: `# GREȘIT: fără mulțimea 'viz' -> buclă infinită pe cicluri
+# CORECT: adaugă în 'viz' ÎNAINTE (sau imediat după) descoperire
+viz = set()
+viz.add(start)   # marchează sursa de la început`,
         },
       ],
     },
