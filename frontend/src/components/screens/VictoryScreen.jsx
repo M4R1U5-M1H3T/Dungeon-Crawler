@@ -87,6 +87,13 @@ export default function VictoryScreen({ state, actions }) {
       <button className="btn amb full center" style={{ fontSize: 14 }} onClick={actions.onRestart}>
         ↺ JOACĂ DIN NOU
       </button>
+      <button
+        className="btn full center"
+        style={{ fontSize: 13, marginTop: 8 }}
+        onClick={actions.onGotoCredits}
+      >
+        🎬 Vezi genericul (After Credits)
+      </button>
     </div>
   );
 }

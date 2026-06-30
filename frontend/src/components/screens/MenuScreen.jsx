@@ -1,15 +1,15 @@
 import { getChapters } from '../../data/chapterContent.js';
 
 const GRADE_INFO = {
-  9:  { label: 'a 9-a',  subtitle: 'Bazele Python' },
-  10: { label: 'a 10-a', subtitle: 'Structuri de Date & Algoritmi' },
-  11: { label: 'a 11-a', subtitle: 'Algoritmi Avansați & OOP' },
+  9:  { label: 'a 9-a',  subtitle: 'Bazele Python & Structuri Liniare' },
+  10: { label: 'a 10-a', subtitle: 'Tablouri, Șiruri & Recursivitate' },
+  11: { label: 'a 11-a', subtitle: 'Grafuri, Backtracking & OOP' },
 };
 
 const DUNGEON_FLOORS = {
-  9:  ['Cripta Variabilelor', 'Labirintul Buclelor', 'Citadela Erorii', 'Sala Scriptorilor'],
-  10: ['Tărâmul Tablourilor', 'Cetatea Matricilor', 'Abisul Algoritmilor', 'Fortăreața Fișierelor'],
-  11: ['Labirintul Recursivității', 'Câmpul Backtracking', 'Citadela Structurilor', 'Cetatea OOP-ului'],
+  9:  ['Cripta Variabilelor', 'Labirintul Buclelor', 'Cavoul Algoritmilor', 'Sala Structurilor Liniare'],
+  10: ['Tărâmul Șirurilor', 'Biblioteca Dicționarelor', 'Cetatea Matricilor', 'Abisul Recursivității'],
+  11: ['Pădurea Grafurilor', 'Câmpul Backtracking', 'Cetatea OOP-ului', 'Sanctuarul Marelui Arhitect'],
 };
 
 function ChapterModal({ chapter, isSelected, onLearn, onQuickQuiz, onToggle, onClose }) {
@@ -215,6 +215,13 @@ export default function MenuScreen({ state, actions }) {
         <button className="btn full center" onClick={actions.onHowTo}>
           📖 CUM SE JOACĂ
         </button>
+      </div>
+
+      <div className="credits-foot">
+        <button className="credits-link" onClick={actions.onGotoCredits}>
+          ✦ Generic &amp; Credits
+        </button>
+        <span>Creat de <strong>Marius-Stefan Mihet</strong> · UBB, Computer Science (EN)</span>
       </div>
 
       {modalChapter && (

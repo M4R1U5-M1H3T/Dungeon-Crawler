@@ -2,6 +2,11 @@ const TOPIC_COLORS = {
   'variabile':'var(--g)','operatori':'var(--blu)','condiționale':'var(--amb)',
   'bucle':'var(--pur)','șiruri':'var(--red)','liste':'#ff8c00',
   'funcții':'var(--cyn)','dicționare':'#ff66cc','tupluri':'#aaaaff',
+  'sortare':'#ffb347','cautare':'#7fd1ff','fisiere':'#c0a060',
+  'stive_cozi':'#9d8cff','tablouri':'#66d9a6','matrici':'#6699ff',
+  'recursivitate':'#ff7fa8','backtracking':'#d98cff','OOP':'#ffd700',
+  'grafuri':'#5fe0c0',
+  'scriere':'#bbbbbb','scriere_10':'#bbbbbb','scriere_11':'#bbbbbb',
 };
 
 export default function ChallengeWidget({ challenge, opts, showHint, onAnswer, onHint }) {
